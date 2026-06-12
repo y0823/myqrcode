@@ -43,6 +43,30 @@
 4. **Open in Browser:**
    Open `http://localhost:3000` in any modern browser.
 
+## Deployment (VPS + Cloudflare Recommended)
+For unrestricted usage (especially batch generation with large ZIP files), we highly recommend deploying to a standard VPS rather than serverless environments (like Cloudflare Workers/Vercel) to avoid CPU timeouts and RAM limits.
+
+1. **Install Node.js & Git (Ubuntu/Debian):**
+   ```bash
+   curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+   sudo apt install -y nodejs git
+   ```
+2. **Clone & Install:**
+   ```bash
+   git clone https://github.com/y0823/myqrcode.git
+   cd myqrcode
+   npm install
+   ```
+3. **Run Continuously with PM2:**
+   ```bash
+   sudo npm install -g pm2
+   pm2 start server.js --name "qrcode"
+   pm2 startup
+   pm2 save
+   ```
+4. **Expose with Cloudflare:**
+   In Cloudflare DNS, add an `A Record` for your domain pointing to the VPS IP, and enable the proxy (Orange Cloud). Then, configure an **Origin Rule** in Cloudflare to rewrite incoming traffic for your hostname to destination port `3000`.
+
 ## Using Excel IMAGE Formula
 You can directly render QR codes in modern Excel (Office 365 / Excel 2024) using the provided GET API endpoint:
 ```excel
@@ -116,6 +140,30 @@ curl -X POST http://localhost:3000/api/generate-batch \
 
 4. **打开网页：**
    使用任意现代浏览器访问 `http://localhost:3000` 即可开始使用。
+
+## 部署到云服务器 (推荐 VPS + Cloudflare)
+为了彻底解除由于“批量生成大量图片”和“大体积 ZIP 压缩包”导致的 Serverless（如 Cloudflare Workers/Vercel）超时和内存报错限制，强烈建议将其部署在一台普通的云服务器（VPS）上：
+
+1. **安装 Node.js 与 Git:**
+   ```bash
+   curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+   sudo apt install -y nodejs git
+   ```
+2. **下载代码并安装依赖:**
+   ```bash
+   git clone https://github.com/y0823/myqrcode.git
+   cd myqrcode
+   npm install
+   ```
+3. **使用 PM2 后台常驻运行:**
+   ```bash
+   sudo npm install -g pm2
+   pm2 start server.js --name "qrcode"
+   pm2 startup
+   pm2 save
+   ```
+4. **配置外网访问:**
+   在 Cloudflare DNS 中添加一条指向您 VPS IP 的 A 记录并开启“小黄云”。随后在 Cloudflare 的“规则 -> 源站规则 (Origin Rules)”中，配置将访问您域名的请求目标端口“重写 (Rewrite to...)”为 `3000` 即可，从而实现零配置免证书的 HTTPS 外网访问。
 
 ## 在 Excel 中使用 IMAGE 公式
 借助后台提供的 GET 接口，您可以直接在较新版本的 Excel 中读取单元格生成二维码：
