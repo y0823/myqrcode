@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="title">二维码工作室</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .lang-switch {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 0.25rem;
+            border-radius: 8px;
+            border: 1px solid var(--panel-border);
+        }
+        .lang-switch button {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        .lang-switch button.active {
+            background: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header-container">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 3H10V10H3V3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14 3H21V10H14V3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14 14H21V21H14V14Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3 14H10V21H3V14Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10 10L14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span data-i18n="title">二维码工作室</span>
+            </div>
+            <div class="header-actions" style="display: flex; align-items: center; gap: 1.5rem;">
+                <a href="guide.html" data-i18n="link_guide" style="color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: color 0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-secondary)'">📖 使用说明</a>
+                <div class="lang-switch">
+                    <button id="lang-zh" class="active">中文</button>
+                    <button id="lang-en">EN</button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="glass-panel main-panel">
+                <div class="tabs">
+                    <button class="tab-btn active" data-target="single" data-i18n="tab_single">单张生成</button>
+                    <button class="tab-btn" data-target="batch" data-i18n="tab_batch">批量生成</button>
+                </div>
+
+                <div class="tab-content active" id="single">
+                    <div class="form-group">
+                        <label for="qr-text" data-i18n="label_content">二维码内容</label>
+                        <textarea id="qr-text" data-i18n-placeholder="placeholder_single" placeholder="请输入网址、文本或数据..." rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="batch">
+                    <div class="form-group">
+                        <label for="qr-batch-text" data-i18n="label_batch">批量内容（每行一条）</label>
+                        <textarea id="qr-batch-text" data-i18n-placeholder="placeholder_batch" placeholder="https://example.com&#10;https://google.com&#10;你好，世界" rows="6"></textarea>
+                    </div>
+                </div>
+
+                <div class="options-grid">
+                    <div class="form-group">
+                        <label for="qr-size" data-i18n="label_size">尺寸 (px)</label>
+                        <input type="number" id="qr-size" value="300" min="100" max="1000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="qr-color-dark" data-i18n="label_color_dark">二维码颜色</label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="qr-color-dark" value="#000000">
+                            <span class="color-hex" id="color-dark-hex">#000000</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="qr-color-light" data-i18n="label_color_light">背景颜色</label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="qr-color-light" value="#ffffff">
+                            <span class="color-hex" id="color-light-hex">#ffffff</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="qr-logo" data-i18n="label_logo">自定义 Logo（可选）</label>
+                        <input type="file" id="qr-logo" accept="image/*">
+                    </div>
+                </div>
+
+                <button id="generate-btn" class="primary-btn" data-i18n="btn_generate">生成二维码</button>
+            </div>
+
+            <div class="glass-panel preview-panel">
+                <div class="preview-header" data-i18n="header_preview">预览</div>
+                <div class="preview-container">
+                    <div id="loading" class="hidden" data-i18n="text_loading">生成中...</div>
+                    <img id="qr-preview" src="" data-i18n-alt="alt_qr" alt="已生成的二维码" class="hidden">
+                    <div id="empty-state" data-i18n="text_empty">您的二维码将显示在这里</div>
+                </div>
+                
+                <div class="actions hidden" id="result-actions">
+                    <button id="copy-btn" class="secondary-btn" data-i18n="btn_copy">复制图片</button>
+                    <button id="download-btn" class="primary-btn" data-i18n="btn_download">下载</button>
+                </div>
+                <div class="actions hidden" id="batch-actions">
+                    <button id="download-batch-btn" class="primary-btn" data-i18n="btn_download_batch">全部下载 (ZIP压缩包)</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

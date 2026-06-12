@@ -1,0 +1,310 @@
+const i18n = {
+    "title": {"zh": "二维码工作室", "en": "QR Code Studio"},
+    "tab_single": {"zh": "单张生成", "en": "Single Generation"},
+    "tab_batch": {"zh": "批量生成", "en": "Batch Generation"},
+    "label_content": {"zh": "二维码内容", "en": "Content"},
+    "placeholder_single": {"zh": "请输入网址、文本或数据...", "en": "Enter URL, text, or data..."},
+    "label_batch": {"zh": "批量内容（每行一条）", "en": "Batch Content (one per line)"},
+    "placeholder_batch": {"zh": "https://example.com\nhttps://google.com\n你好，世界", "en": "https://example.com\nhttps://google.com\nHello World"},
+    "label_size": {"zh": "尺寸 (px)", "en": "Size (px)"},
+    "label_color_dark": {"zh": "二维码颜色", "en": "QR Color"},
+    "label_color_light": {"zh": "背景颜色", "en": "Background"},
+    "label_logo": {"zh": "自定义 Logo（可选）", "en": "Custom Logo (Optional)"},
+    "btn_generate": {"zh": "生成二维码", "en": "Generate QR Code"},
+    "header_preview": {"zh": "预览", "en": "Preview"},
+    "text_loading": {"zh": "生成中...", "en": "Generating..."},
+    "alt_qr": {"zh": "已生成的二维码", "en": "Generated QR Code"},
+    "text_empty": {"zh": "您的二维码将显示在这里", "en": "Your QR Code will appear here"},
+    "btn_copy": {"zh": "复制图片", "en": "Copy Image"},
+    "btn_download": {"zh": "下载", "en": "Download"},
+    "btn_download_batch": {"zh": "全部下载 (ZIP压缩包)", "en": "Download All (ZIP)"},
+    "link_guide": {"zh": "📖 使用说明", "en": "📖 Guide"},
+    "alert_content_empty": {"zh": "请输入内容", "en": "Please enter some content"},
+    "alert_batch_empty": {"zh": "请输入批量生成内容", "en": "Please enter batch content"},
+    "alert_batch_invalid": {"zh": "请输入有效的批量生成内容", "en": "Please enter valid batch content"},
+    "alert_gen_error": {"zh": "生成二维码失败", "en": "Error generating QR code"},
+    "text_batch_success": {"zh": "{n} 个二维码已成功生成。", "en": "{n} QR Codes generated successfully."},
+    "alert_batch_error": {"zh": "批量生成二维码失败", "en": "Error generating batch QR codes"},
+    "text_copied": {"zh": "已复制！", "en": "Copied!"},
+    "alert_copy_failed": {"zh": "复制到剪贴板失败。请确保您使用的是 HTTPS 或 localhost。", "en": "Failed to copy to clipboard. Ensure you are using HTTPS or localhost."}
+};
+
+let currentLang = 'zh';
+
+function t(key, params = {}) {
+    let str = i18n[key][currentLang];
+    for (const [k, v] of Object.entries(params)) {
+        str = str.replace(`{${k}}`, v);
+    }
+    return str;
+}
+
+function updateDOMTranslations() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[key]) {
+            el.textContent = i18n[key][currentLang];
+        }
+    });
+    
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (i18n[key]) {
+            el.placeholder = i18n[key][currentLang];
+        }
+    });
+
+    document.querySelectorAll('[data-i18n-alt]').forEach(el => {
+        const key = el.getAttribute('data-i18n-alt');
+        if (i18n[key]) {
+            el.alt = i18n[key][currentLang];
+        }
+    });
+    
+    document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Elements
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    const singleText = document.getElementById('qr-text');
+    const batchText = document.getElementById('qr-batch-text');
+    const sizeInput = document.getElementById('qr-size');
+    const colorDark = document.getElementById('qr-color-dark');
+    const colorLight = document.getElementById('qr-color-light');
+    const colorDarkHex = document.getElementById('color-dark-hex');
+    const colorLightHex = document.getElementById('color-light-hex');
+    const logoInput = document.getElementById('qr-logo');
+    
+    const generateBtn = document.getElementById('generate-btn');
+    
+    const qrPreview = document.getElementById('qr-preview');
+    const emptyState = document.getElementById('empty-state');
+    const loadingState = document.getElementById('loading');
+    
+    const resultActions = document.getElementById('result-actions');
+    const batchActions = document.getElementById('batch-actions');
+    const copyBtn = document.getElementById('copy-btn');
+    const downloadBtn = document.getElementById('download-btn');
+    const downloadBatchBtn = document.getElementById('download-batch-btn');
+
+    let currentMode = 'single'; // 'single' or 'batch'
+    let lastGeneratedBlob = null;
+    let lastGeneratedBatchBlob = null;
+
+    // Language Toggle
+    const langZhBtn = document.getElementById('lang-zh');
+    const langEnBtn = document.getElementById('lang-en');
+
+    langZhBtn.addEventListener('click', () => {
+        currentLang = 'zh';
+        langZhBtn.classList.add('active');
+        langEnBtn.classList.remove('active');
+        updateDOMTranslations();
+        
+        // Update empty state if no blob is generated
+        if (!lastGeneratedBlob && !lastGeneratedBatchBlob && emptyState.textContent !== '') {
+            emptyState.textContent = t('text_empty');
+        } else if (lastGeneratedBatchBlob && emptyState.textContent !== t('text_empty')) {
+            const lines = batchText.value.trim().split('\n').filter(t => t.trim()).length;
+            emptyState.textContent = t('text_batch_success', {n: lines});
+        }
+    });
+
+    langEnBtn.addEventListener('click', () => {
+        currentLang = 'en';
+        langEnBtn.classList.add('active');
+        langZhBtn.classList.remove('active');
+        updateDOMTranslations();
+        
+        // Update empty state if no blob is generated
+        if (!lastGeneratedBlob && !lastGeneratedBatchBlob && emptyState.textContent !== '') {
+            emptyState.textContent = t('text_empty');
+        } else if (lastGeneratedBatchBlob && emptyState.textContent !== t('text_empty')) {
+            const lines = batchText.value.trim().split('\n').filter(t => t.trim()).length;
+            emptyState.textContent = t('text_batch_success', {n: lines});
+        }
+    });
+
+    // Initial Translation
+    updateDOMTranslations();
+
+    // Tabs logic
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            
+            btn.classList.add('active');
+            const target = btn.getAttribute('data-target');
+            document.getElementById(target).classList.add('active');
+            currentMode = target;
+
+            // Reset UI
+            resetPreviewUI();
+        });
+    });
+
+    // Color Pickers logic
+    colorDark.addEventListener('input', (e) => colorDarkHex.textContent = e.target.value);
+    colorLight.addEventListener('input', (e) => colorLightHex.textContent = e.target.value);
+
+    // Generate Button Click
+    generateBtn.addEventListener('click', async () => {
+        if (currentMode === 'single') {
+            const text = singleText.value.trim();
+            if (!text) return alert(t('alert_content_empty'));
+            await generateSingle(text);
+        } else {
+            const text = batchText.value.trim();
+            if (!text) return alert(t('alert_batch_empty'));
+            const texts = text.split('\n').map(t => t.trim()).filter(t => t);
+            if (texts.length === 0) return alert(t('alert_batch_invalid'));
+            await generateBatch(texts);
+        }
+    });
+
+    function resetPreviewUI() {
+        qrPreview.classList.add('hidden');
+        qrPreview.src = '';
+        emptyState.classList.remove('hidden');
+        emptyState.textContent = t('text_empty');
+        resultActions.classList.add('hidden');
+        batchActions.classList.add('hidden');
+        lastGeneratedBlob = null;
+        lastGeneratedBatchBlob = null;
+    }
+
+    function showLoading(show) {
+        if (show) {
+            emptyState.classList.add('hidden');
+            qrPreview.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+            resultActions.classList.add('hidden');
+            batchActions.classList.add('hidden');
+        } else {
+            loadingState.classList.add('hidden');
+        }
+    }
+
+    // Single Generation
+    async function generateSingle(text) {
+        showLoading(true);
+        
+        const formData = new FormData();
+        formData.append('text', text);
+        formData.append('size', sizeInput.value);
+        formData.append('colorDark', colorDark.value);
+        formData.append('colorLight', colorLight.value);
+        if (logoInput.files[0]) {
+            formData.append('logo', logoInput.files[0]);
+        }
+
+        try {
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) throw new Error('Failed to generate QR code');
+
+            const blob = await response.blob();
+            lastGeneratedBlob = blob;
+            const objectURL = URL.createObjectURL(blob);
+
+            showLoading(false);
+            qrPreview.src = objectURL;
+            qrPreview.classList.remove('hidden');
+            resultActions.classList.remove('hidden');
+        } catch (error) {
+            console.error(error);
+            showLoading(false);
+            emptyState.classList.remove('hidden');
+            emptyState.textContent = t('text_empty');
+            alert(t('alert_gen_error'));
+        }
+    }
+
+    // Batch Generation
+    async function generateBatch(texts) {
+        showLoading(true);
+        
+        const formData = new FormData();
+        formData.append('texts', JSON.stringify(texts));
+        formData.append('size', sizeInput.value);
+        formData.append('colorDark', colorDark.value);
+        formData.append('colorLight', colorLight.value);
+        if (logoInput.files[0]) {
+            formData.append('logo', logoInput.files[0]);
+        }
+
+        try {
+            const response = await fetch('/api/generate-batch', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) throw new Error('Failed to generate batch QR codes');
+
+            const blob = await response.blob();
+            lastGeneratedBatchBlob = blob;
+            
+            showLoading(false);
+            emptyState.textContent = t('text_batch_success', {n: texts.length});
+            emptyState.classList.remove('hidden');
+            batchActions.classList.remove('hidden');
+        } catch (error) {
+            console.error(error);
+            showLoading(false);
+            emptyState.classList.remove('hidden');
+            emptyState.textContent = t('text_empty');
+            alert(t('alert_batch_error'));
+        }
+    }
+
+    // Copy to clipboard
+    copyBtn.addEventListener('click', async () => {
+        if (!lastGeneratedBlob) return;
+        try {
+            await navigator.clipboard.write([
+                new ClipboardItem({
+                    [lastGeneratedBlob.type]: lastGeneratedBlob
+                })
+            ]);
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = t('text_copied');
+            setTimeout(() => copyBtn.textContent = originalText, 2000);
+        } catch (err) {
+            console.error('Failed to copy', err);
+            alert(t('alert_copy_failed'));
+        }
+    });
+
+    // Download Single
+    downloadBtn.addEventListener('click', () => {
+        if (!lastGeneratedBlob) return;
+        const objectURL = URL.createObjectURL(lastGeneratedBlob);
+        const a = document.createElement('a');
+        a.href = objectURL;
+        a.download = 'qrcode.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(objectURL);
+    });
+
+    // Download Batch
+    downloadBatchBtn.addEventListener('click', () => {
+        if (!lastGeneratedBatchBlob) return;
+        const objectURL = URL.createObjectURL(lastGeneratedBatchBlob);
+        const a = document.createElement('a');
+        a.href = objectURL;
+        a.download = 'qrcodes.zip';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(objectURL);
+    });
+});

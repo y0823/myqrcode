@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>使用说明 - 二维码工作室</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .guide-container {
+            max-width: 800px;
+            margin: 0 auto;
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem;
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .guide-container h1, .guide-container h2, .guide-container h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        .guide-container p, .guide-container ul {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        .guide-container li {
+            margin-left: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .guide-container code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #a78bfa;
+        }
+        .guide-container pre {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        .guide-container pre code {
+            background: none;
+            padding: 0;
+            color: #e2e8f0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .back-link:hover {
+            color: var(--primary);
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+        .lang-switch {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 0.25rem;
+            border-radius: 8px;
+            border: 1px solid var(--panel-border);
+        }
+        .lang-switch button {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        .lang-switch button.active {
+            background: var(--primary);
+            color: white;
+        }
+        .section-en {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header-container">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 3H10V10H3V3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14 3H21V10H14V3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14 14H21V21H14V14Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3 14H10V21H3V14Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10 10L14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span id="guide-title">使用说明</span>
+            </div>
+            <div class="lang-switch">
+                <button id="lang-zh" class="active">中文</button>
+                <button id="lang-en">EN</button>
+            </div>
+        </header>
+
+        <main style="display: block;">
+            <div class="guide-container">
+                <a href="/" class="back-link" id="back-btn">← 返回生成器</a>
+
+                <!-- 中文版 -->
+                <div id="content-zh" class="section-zh">
+                    <h1>二维码工作室 - 使用指南</h1>
+                    <p>欢迎使用二维码工作室，本工具支持高自由度定制的现代化二维码生成以及强大的 REST API 接口。</p>
+                    
+                    <h2>1. 基本操作</h2>
+                    <ul>
+                        <li><strong>单张生成</strong>：在文本框内粘贴 URL、文本，点击生成后即可在右侧预览。点击“下载”或“复制图片”即可提取。</li>
+                        <li><strong>批量生成</strong>：在批量输入框内输入多行内容（每行一条），系统会生成对应的多张二维码并打包为 <code>.zip</code> 文件供一键下载。</li>
+                        <li><strong>自定义样式</strong>：您可以调整像素大小，使用色彩轮盘修改二维码颜色与背景色，或者点击“选择文件”嵌入自定义中心 Logo。</li>
+                    </ul>
+
+                    <h2>2. 实用技巧：生成自动连接的 WiFi 二维码</h2>
+                    <p>您可以在内容框输入以下格式文本，生成的二维码使用手机原生相机扫描后即可自动连接 WiFi：</p>
+                    <pre><code>WIFI:S:您的WiFi名称;T:WPA;P:您的密码;;</code></pre>
+                    <p><i>注意：结尾必须带上 <code>;;</code> 两个分号。</i></p>
+
+                    <h2>3. 在 Excel 中使用 IMAGE 公式</h2>
+                    <p>在较新版本的 Excel (Office 365 / 2024) 中，您可以直接读取 A1 单元格内容并渲染二维码：</p>
+                    <pre><code>=IMAGE("http://localhost:3000/api/generate?text=" & ENCODEURL(A1))</code></pre>
+                    <p>若要自定义颜色（例如蓝色），记得将 <code>#</code> 转义为 <code>%23</code>：</p>
+                    <pre><code>=IMAGE("http://localhost:3000/api/generate?size=200&colorDark=%230000FF&text=" & ENCODEURL(A1))</code></pre>
+
+                    <h2>4. API 接口文档 (面向开发者)</h2>
+                    <h3>单张生成 (POST / GET)</h3>
+                    <p>调用 <code>/api/generate</code>。支持 JSON 传参或 Form-Data（若需上传 Logo）。</p>
+                    <pre><code>curl -X POST http://localhost:3000/api/generate \
+  -H "Content-Type: application/json" \
+  -d '{"text": "https://example.com", "size": 300}' \
+  --output qrcode.png</code></pre>
+
+                    <h3>批量生成 (POST)</h3>
+                    <p>调用 <code>/api/generate-batch</code>，传入 <code>texts</code> 字符串数组，返回 ZIP 文件流。</p>
+                    <pre><code>curl -X POST http://localhost:3000/api/generate-batch \
+  -H "Content-Type: application/json" \
+  -d '{"texts": ["https://google.com", "Hello"]}' \
+  --output batch.zip</code></pre>
+                </div>
+
+                <!-- 英文版 -->
+                <div id="content-en" class="section-en">
+                    <h1>QR Code Studio - User Guide</h1>
+                    <p>Welcome to QR Code Studio, a modern web app for generating highly customizable QR codes with powerful REST API support.</p>
+                    
+                    <h2>1. Basic Operations</h2>
+                    <ul>
+                        <li><strong>Single Generation</strong>: Paste a URL or text into the box, click generate, and preview it on the right. You can then download or copy the image directly to your clipboard.</li>
+                        <li><strong>Batch Generation</strong>: Input multiple lines of text. The system will generate a QR code for each line and package them into a single <code>.zip</code> archive for 1-click download.</li>
+                        <li><strong>Customization</strong>: You can adjust the pixel size, use the color pickers for foreground/background colors, and upload a custom Logo to embed in the center.</li>
+                    </ul>
+
+                    <h2>2. Pro Tip: WiFi Auto-Connect QR Codes</h2>
+                    <p>You can generate a QR code that automatically connects smartphones to your WiFi by entering this exact format:</p>
+                    <pre><code>WIFI:S:YourNetworkName;T:WPA;P:YourPassword;;</code></pre>
+                    <p><i>Note: It must end with two semicolons <code>;;</code></i></p>
+
+                    <h2>3. Excel IMAGE Formula Integration</h2>
+                    <p>In modern Excel (Office 365 / 2024), you can render QR codes directly from cell contents (e.g., A1):</p>
+                    <pre><code>=IMAGE("http://localhost:3000/api/generate?text=" & ENCODEURL(A1))</code></pre>
+                    <p>To use custom colors (e.g., blue), escape the <code>#</code> symbol as <code>%23</code>:</p>
+                    <pre><code>=IMAGE("http://localhost:3000/api/generate?size=200&colorDark=%230000FF&text=" & ENCODEURL(A1))</code></pre>
+
+                    <h2>4. API Documentation (For Developers)</h2>
+                    <h3>Single Generation (POST / GET)</h3>
+                    <p>Call <code>/api/generate</code>. Supports JSON or Form-Data (required if uploading a logo).</p>
+                    <pre><code>curl -X POST http://localhost:3000/api/generate \
+  -H "Content-Type: application/json" \
+  -d '{"text": "https://example.com", "size": 300}' \
+  --output qrcode.png</code></pre>
+
+                    <h3>Batch Generation (POST)</h3>
+                    <p>Call <code>/api/generate-batch</code> with a <code>texts</code> array to receive a ZIP archive.</p>
+                    <pre><code>curl -X POST http://localhost:3000/api/generate-batch \
+  -H "Content-Type: application/json" \
+  -d '{"texts": ["https://google.com", "Hello"]}' \
+  --output batch.zip</code></pre>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const btnZh = document.getElementById('lang-zh');
+        const btnEn = document.getElementById('lang-en');
+        const contentZh = document.getElementById('content-zh');
+        const contentEn = document.getElementById('content-en');
+        const backBtn = document.getElementById('back-btn');
+        const guideTitle = document.getElementById('guide-title');
+
+        btnZh.addEventListener('click', () => {
+            btnZh.classList.add('active');
+            btnEn.classList.remove('active');
+            contentZh.style.display = 'block';
+            contentEn.style.display = 'none';
+            backBtn.textContent = '← 返回生成器';
+            guideTitle.textContent = '使用说明';
+            document.title = '使用说明 - 二维码工作室';
+            document.documentElement.lang = 'zh-CN';
+            localStorage.setItem('qr-lang', 'zh');
+        });
+
+        btnEn.addEventListener('click', () => {
+            btnEn.classList.add('active');
+            btnZh.classList.remove('active');
+            contentEn.style.display = 'block';
+            contentZh.style.display = 'none';
+            backBtn.textContent = '← Back to Generator';
+            guideTitle.textContent = 'User Guide';
+            document.title = 'User Guide - QR Studio';
+            document.documentElement.lang = 'en';
+            localStorage.setItem('qr-lang', 'en');
+        });
+
+        // Initialize from localStorage if available
+        const savedLang = localStorage.getItem('qr-lang');
+        if (savedLang === 'en') {
+            btnEn.click();
+        }
+    </script>
+</body>
+</html>
