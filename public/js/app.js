@@ -208,14 +208,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Size Input Validation
-    sizeInput.addEventListener('input', () => {
+    const validateSize = () => {
         const max = parseInt(sizeInput.max) || 1000;
         let val = parseInt(sizeInput.value);
-        if (!isNaN(val) && val > max) {
+        if ((sizeInput.validity && sizeInput.validity.rangeOverflow) || (!isNaN(val) && val > max)) {
             alert(t('alert_size_limit', { max: max }));
             sizeInput.value = max;
         }
-    });
+    };
+    sizeInput.addEventListener('input', validateSize);
+    sizeInput.addEventListener('keyup', validateSize);
+    sizeInput.addEventListener('change', validateSize);
     sizeInput.addEventListener('blur', () => {
         let val = parseInt(sizeInput.value);
         if (isNaN(val) || val < 100) {
@@ -264,6 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Single Text Input & Clear Button
+    if (singleText) singleText.removeAttribute('maxlength'); // Bypass cached HTML restrictions
     singleText.addEventListener('input', () => {
         const count = singleText.value.length;
         singleCharCount.textContent = `${count} / 100`;
