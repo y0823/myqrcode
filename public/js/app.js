@@ -238,6 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
             singleCharCount.style.color = 'red';
             singleText.value = singleText.value.substring(0, 100);
             singleCharCount.textContent = `100 / 100`;
+            alert(t('alert_length_limit'));
         } else {
             singleCharCount.style.color = 'var(--text-secondary)';
         }
