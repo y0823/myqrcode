@@ -161,12 +161,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const reader = new FileReader();
         reader.onload = function(evt) {
             const content = evt.target.result;
-            const currentText = batchText.value;
-            batchText.value = currentText ? currentText + '\n' + content : content;
-            // Clear input so same file can be selected again
+            batchText.value = content;
             batchFileInput.value = '';
+            // Trigger input event to update line count
+            batchText.dispatchEvent(new Event('input'));
         };
         reader.readAsText(file);
+    });
+
+    const batchLineCount = document.getElementById('batch-line-count');
+    batchText.addEventListener('input', () => {
+        const texts = batchText.value.split('\n').map(t => t.trim()).filter(t => t);
+        const count = texts.length;
+        batchLineCount.textContent = `${count} / 100`;
+        if (count > 100) {
+            batchLineCount.style.color = 'red';
+            // Only alert if we just crossed the threshold to avoid spamming
+            if (batchText.dataset.overlimit !== 'true') {
+                alert(t('alert_batch_limit'));
+                batchText.dataset.overlimit = 'true';
+            }
+        } else {
+            batchLineCount.style.color = 'var(--text-secondary)';
+            batchText.dataset.overlimit = 'false';
+        }
     });
 
     // Generate Button Click
