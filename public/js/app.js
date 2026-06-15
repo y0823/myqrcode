@@ -4,7 +4,8 @@ const i18n = {
     "tab_batch": {"zh": "批量生成", "en": "Batch Generation"},
     "label_content": {"zh": "二维码内容", "en": "Content"},
     "placeholder_single": {"zh": "请输入网址、文本或数据...", "en": "Enter URL, text, or data..."},
-    "label_batch": {"zh": "批量内容（每行一条）", "en": "Batch Content (one per line)"},
+    "label_batch": {"zh": "批量内容（每行一条，最多100条）", "en": "Batch Content (max 100 lines)"},
+    "btn_upload_txt": {"zh": "上传 TXT 文件", "en": "Upload TXT File"},
     "placeholder_batch": {"zh": "https://example.com\nhttps://google.com\n你好，世界", "en": "https://example.com\nhttps://google.com\nHello World"},
     "label_size": {"zh": "尺寸 (px)", "en": "Size (px)"},
     "label_color_dark": {"zh": "二维码颜色", "en": "QR Color"},
@@ -22,6 +23,7 @@ const i18n = {
     "alert_content_empty": {"zh": "请输入内容", "en": "Please enter some content"},
     "alert_batch_empty": {"zh": "请输入批量生成内容", "en": "Please enter batch content"},
     "alert_batch_invalid": {"zh": "请输入有效的批量生成内容", "en": "Please enter valid batch content"},
+    "alert_batch_limit": {"zh": "批量生成最多支持100条内容", "en": "Batch generation supports a maximum of 100 items"},
     "alert_gen_error": {"zh": "生成二维码失败", "en": "Error generating QR code"},
     "text_batch_success": {"zh": "{n} 个二维码已成功生成。", "en": "{n} QR Codes generated successfully."},
     "alert_batch_error": {"zh": "批量生成二维码失败", "en": "Error generating batch QR codes"},
@@ -71,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const singleText = document.getElementById('qr-text');
     const batchText = document.getElementById('qr-batch-text');
+    const batchFileInput = document.getElementById('qr-batch-file');
     const sizeInput = document.getElementById('qr-size');
     const colorDark = document.getElementById('qr-color-dark');
     const colorLight = document.getElementById('qr-color-light');
@@ -151,6 +154,21 @@ document.addEventListener('DOMContentLoaded', () => {
     colorDark.addEventListener('input', (e) => colorDarkHex.textContent = e.target.value);
     colorLight.addEventListener('input', (e) => colorLightHex.textContent = e.target.value);
 
+    // TXT File Upload
+    batchFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            const content = evt.target.result;
+            const currentText = batchText.value;
+            batchText.value = currentText ? currentText + '\n' + content : content;
+            // Clear input so same file can be selected again
+            batchFileInput.value = '';
+        };
+        reader.readAsText(file);
+    });
+
     // Generate Button Click
     generateBtn.addEventListener('click', async () => {
         if (currentMode === 'single') {
@@ -162,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!text) return alert(t('alert_batch_empty'));
             const texts = text.split('\n').map(t => t.trim()).filter(t => t);
             if (texts.length === 0) return alert(t('alert_batch_invalid'));
+            if (texts.length > 100) return alert(t('alert_batch_limit'));
             await generateBatch(texts);
         }
     });

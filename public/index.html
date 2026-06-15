@@ -76,7 +76,11 @@
 
                 <div class="tab-content" id="batch">
                     <div class="form-group">
-                        <label for="qr-batch-text" data-i18n="label_batch">批量内容（每行一条）</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <label for="qr-batch-text" data-i18n="label_batch" style="margin-bottom: 0;">批量内容（每行一条，最多100条）</label>
+                            <label for="qr-batch-file" class="secondary-btn" style="padding: 0.2rem 0.6rem; font-size: 0.8rem; cursor: pointer; margin-bottom: 0;" data-i18n="btn_upload_txt">上传 TXT 文件</label>
+                            <input type="file" id="qr-batch-file" accept=".txt" style="display: none;">
+                        </div>
                         <textarea id="qr-batch-text" data-i18n-placeholder="placeholder_batch" placeholder="https://example.com&#10;https://google.com&#10;你好，世界" rows="6"></textarea>
                     </div>
                 </div>

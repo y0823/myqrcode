@@ -6,6 +6,7 @@ const sharp = require('sharp');
 const archiver = require('archiver');
 const path = require('path');
 const fs = require('fs');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -16,9 +17,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Multer config for logo uploads
+// Multer config for logo uploads with 500KB limit
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer({ 
+  storage: storage,
+  limits: { fileSize: 500 * 1024 } // 500 KB limit for logo
+});
 
 /**
  * Generate a single QR Code image buffer with optional logo
@@ -103,7 +107,14 @@ app.post('/api/generate', upload.single('logo'), async (req, res) => {
   }
 });
 
-app.post('/api/generate-batch', upload.single('logo'), async (req, res) => {
+// Rate limiter for batch generation: Max 5 requests per minute per IP
+const batchLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 5,
+  message: { error: '请求过于频繁，请稍后再试' }
+});
+
+app.post('/api/generate-batch', batchLimiter, upload.single('logo'), async (req, res) => {
   try {
     let { texts, size, margin, colorDark, colorLight } = req.body;
     
@@ -121,6 +132,10 @@ app.post('/api/generate-batch', upload.single('logo'), async (req, res) => {
       return res.status(400).json({ error: 'Texts array is required' });
     }
 
+    if (texts.length > 100) {
+      return res.status(400).json({ error: 'Max 100 items allowed per batch' });
+    }
+
     const options = { size, margin, colorDark, colorLight };
     const logoBuffer = req.file ? req.file.buffer : null;
 
@@ -129,22 +144,31 @@ app.post('/api/generate-batch', upload.single('logo'), async (req, res) => {
       'Content-Disposition': 'attachment; filename=qrcodes.zip'
     });
 
-    const AdmZip = require('adm-zip');
-    const zip = new AdmZip();
+    const archive = archiver('zip', { zlib: { level: 9 } });
+    archive.on('error', function(err) {
+      throw err;
+    });
+    
+    // Pipe archive data to the response
+    archive.pipe(res);
 
-    for (let i = 0; i < texts.length; i++) {
-      const text = texts[i];
-      const finalImageBuffer = await generateQRCodeBuffer(text, options, logoBuffer);
-      
-      // Clean filename
-      let safeName = text.substring(0, 20).replace(/[^a-zA-Z0-9]/g, '_');
-      if (!safeName) safeName = `qrcode_${i}`;
-      
-      zip.addFile(`${safeName}.png`, finalImageBuffer, `QR Code for ${text}`);
+    // Concurrency control: process 5 items at a time
+    const CONCURRENCY = 5;
+    for (let i = 0; i < texts.length; i += CONCURRENCY) {
+      const batch = texts.slice(i, i + CONCURRENCY);
+      await Promise.all(batch.map(async (text, index) => {
+        const realIndex = i + index;
+        const finalImageBuffer = await generateQRCodeBuffer(text, options, logoBuffer);
+        
+        // Clean filename
+        let safeName = text.substring(0, 20).replace(/[^a-zA-Z0-9]/g, '_');
+        if (!safeName) safeName = `qrcode_${realIndex}`;
+        
+        archive.append(finalImageBuffer, { name: `${safeName}.png` });
+      }));
     }
 
-    const zipBuffer = zip.toBuffer();
-    res.send(zipBuffer);
+    archive.finalize();
 
   } catch (error) {
     console.error(error);
