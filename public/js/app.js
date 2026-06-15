@@ -64,7 +64,8 @@ const i18n = {
     "alert_copy_failed": {"zh": "复制到剪贴板失败。请确保您使用的是 HTTPS 或 localhost。", "en": "Failed to copy to clipboard. Ensure you are using HTTPS or localhost."},
     "btn_remove_file": {"zh": "移除文件", "en": "Remove File"},
     "alert_length_limit": {"zh": "单条内容长度不能超过100个字符", "en": "Content length cannot exceed 100 characters per item"},
-    "alert_size_limit": {"zh": "当前模式下尺寸不能超过 {max}px", "en": "Size cannot exceed {max}px in current mode"}
+    "alert_size_limit": {"zh": "当前模式下尺寸不能超过 {max}px", "en": "Size cannot exceed {max}px in current mode"},
+    "alert_size_invalid": {"zh": "请输入有效的数字（100-{max}）", "en": "Please enter a valid number (100-{max})"}
 };
 
 let currentLang = 'zh';
@@ -220,9 +221,15 @@ document.addEventListener('DOMContentLoaded', () => {
     sizeInput.addEventListener('keyup', validateSize);
     sizeInput.addEventListener('change', validateSize);
     sizeInput.addEventListener('blur', () => {
+        const max = parseInt(sizeInput.max) || 1000;
         let val = parseInt(sizeInput.value);
-        if (isNaN(val) || val < 100) {
+        if (isNaN(val)) {
+            alert(t('alert_size_invalid', { max: max }));
+            sizeInput.value = 300;
+        } else if (val < 100) {
             sizeInput.value = 100;
+        } else if (val > max) {
+            sizeInput.value = max;
         }
     });
 
@@ -289,6 +296,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if(batchClearBtn) batchClearBtn.addEventListener('click', () => {
         batchText.value = '';
+        // Also reset TXT file upload state
+        batchFileInput.value = '';
+        batchInputArea.style.display = 'block';
+        batchUploadWrapper.style.display = 'block';
+        batchUploadWrapper.style.opacity = '1';
+        batchFileLabel.style.cursor = 'pointer';
+        batchFileInput.disabled = false;
+        batchFileInfo.style.display = 'none';
         batchText.dispatchEvent(new Event('input'));
     });
 
