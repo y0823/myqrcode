@@ -224,15 +224,15 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             singleCharCount.style.color = 'var(--text-secondary)';
         }
-        singleClearBtn.style.display = count > 0 ? 'block' : 'none';
+        if(singleClearBtn) singleClearBtn.style.display = count > 0 ? 'block' : 'none';
     });
 
-    singleClearBtn.addEventListener('click', () => {
+    if(singleClearBtn) singleClearBtn.addEventListener('click', () => {
         singleText.value = '';
         singleText.dispatchEvent(new Event('input'));
     });
 
-    batchClearBtn.addEventListener('click', () => {
+    if(batchClearBtn) batchClearBtn.addEventListener('click', () => {
         batchText.value = '';
         batchText.dispatchEvent(new Event('input'));
     });
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
             batchText.dataset.overlimit = 'false';
         }
 
-        batchClearBtn.style.display = batchText.value.length > 0 ? 'block' : 'none';
+        if(batchClearBtn) batchClearBtn.style.display = batchText.value.length > 0 ? 'block' : 'none';
 
         // Mutual exclusivity: disable file upload if textarea has content AND we are not in "uploaded file" mode
         if (batchFileInfo.style.display !== 'block') {
