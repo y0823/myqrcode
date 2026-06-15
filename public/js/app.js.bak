@@ -82,6 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const batchInputArea = document.getElementById('batch-input-area');
     const batchFileInfo = document.getElementById('batch-file-info');
     const batchFilename = document.getElementById('batch-filename');
+    const batchFilelines = document.getElementById('batch-filelines');
+    const batchFilelines = document.getElementById('batch-filelines');
+    const batchFileRemove = document.getElementById('batch-file-remove');
+    const batchUploadWrapper = document.getElementById('batch-upload-wrapper');
+    const batchFileLabel = document.getElementById('qr-batch-file-label');
+    const batchLineCount = document.getElementById('batch-line-count');
     
     const sizeInput = document.getElementById('qr-size');
     const colorDark = document.getElementById('qr-color-dark');

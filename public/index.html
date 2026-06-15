@@ -69,8 +69,14 @@
 
                 <div class="tab-content active" id="single">
                     <div class="form-group">
-                        <label for="qr-text" data-i18n="label_content">二维码内容</label>
-                        <textarea id="qr-text" data-i18n-placeholder="placeholder_single" placeholder="请输入网址、文本或数据..." rows="3"></textarea>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <label for="qr-text" data-i18n="label_content" style="margin-bottom: 0;">二维码内容</label>
+                            <span id="single-char-count" style="font-size: 0.8rem; color: var(--text-secondary); font-weight: bold;">0 / 100</span>
+                        </div>
+                        <div style="position: relative;">
+                            <textarea id="qr-text" data-i18n-placeholder="placeholder_single" placeholder="请输入网址、文本或数据..." rows="3" maxlength="100"></textarea>
+                            <button type="button" id="single-clear-btn" style="position: absolute; top: 8px; right: 8px; background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.2rem; display: none;" title="清空内容">×</button>
+                        </div>
                     </div>
                 </div>
 
@@ -80,8 +86,9 @@
                             <label for="qr-batch-text" data-i18n="label_batch" style="margin-bottom: 0;">批量内容（每行一条，最多100条）</label>
                             <span id="batch-line-count" style="font-size: 0.8rem; color: var(--text-secondary); font-weight: bold;">0 / 100</span>
                         </div>
-                        <div id="batch-input-area">
+                        <div id="batch-input-area" style="position: relative;">
                             <textarea id="qr-batch-text" data-i18n-placeholder="placeholder_batch" placeholder="https://example.com&#10;https://google.com&#10;你好，世界" rows="6"></textarea>
+                            <button type="button" id="batch-clear-btn" style="position: absolute; top: 8px; right: 8px; background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.2rem; display: none;" title="清空内容">×</button>
                         </div>
                         <div id="batch-file-info" style="display: none; padding: 1rem; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 0.5rem; text-align: center; border: 1px dashed var(--primary);">
                             <div style="margin-bottom: 0.5rem;"><span id="batch-filename" style="font-weight: bold;"></span> (<span id="batch-filelines"></span> 条)</div>
@@ -146,6 +153,6 @@
         </main>
     </div>
 
-    <script src="js/app.js?v=3"></script>
+    <script src="js/app.js?v=4"></script>
 </body>
 </html>

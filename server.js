@@ -74,8 +74,12 @@ app.get('/api/generate', async (req, res) => {
     if (!text) {
       return res.status(400).json({ error: 'Text is required' });
     }
+    if (text.length > 100) {
+      return res.status(400).json({ error: 'Text length cannot exceed 100 characters' });
+    }
 
     const options = { size, margin, colorDark, colorLight };
+    if (options.size > 1000) options.size = 1000;
     // GET requests usually don't support file uploads easily, so no logoBuffer
     const finalImageBuffer = await generateQRCodeBuffer(text, options, null);
 
@@ -94,8 +98,12 @@ app.post('/api/generate', upload.single('logo'), async (req, res) => {
     if (!text) {
       return res.status(400).json({ error: 'Text is required' });
     }
+    if (text.length > 100) {
+      return res.status(400).json({ error: 'Text length cannot exceed 100 characters' });
+    }
 
     const options = { size, margin, colorDark, colorLight };
+    if (options.size > 1000) options.size = 1000;
     const logoBuffer = req.file ? req.file.buffer : null;
 
     const finalImageBuffer = await generateQRCodeBuffer(text, options, logoBuffer);
@@ -136,8 +144,12 @@ app.post('/api/generate-batch', batchLimiter, upload.single('logo'), async (req,
     if (texts.length > 100) {
       return res.status(400).json({ error: 'Max 100 items allowed per batch' });
     }
+    if (texts.some(t => t.length > 100)) {
+      return res.status(400).json({ error: 'Text length cannot exceed 100 characters per item' });
+    }
 
     const options = { size, margin, colorDark, colorLight };
+    if (options.size > 500) options.size = 500;
     const logoBuffer = req.file ? req.file.buffer : null;
 
     res.set({
