@@ -9,6 +9,7 @@ const fs = require('fs');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
+app.set('trust proxy', 1);
 const port = process.env.PORT || 3000;
 
 // Middleware
@@ -144,7 +145,12 @@ app.post('/api/generate-batch', batchLimiter, upload.single('logo'), async (req,
       'Content-Disposition': 'attachment; filename=qrcodes.zip'
     });
 
-    const archive = archiver('zip', { zlib: { level: 9 } });
+    let archive;
+    if (typeof archiver === 'function') {
+      archive = archiver('zip', { zlib: { level: 9 } });
+    } else {
+      archive = new archiver.ZipArchive({ zlib: { level: 9 } });
+    }
     archive.on('error', function(err) {
       throw err;
     });
