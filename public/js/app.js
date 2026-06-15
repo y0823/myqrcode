@@ -175,13 +175,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Size Input Validation
-    sizeInput.addEventListener('change', () => {
+    sizeInput.addEventListener('input', () => {
         const max = parseInt(sizeInput.max) || 1000;
         let val = parseInt(sizeInput.value);
-        if (val > max) {
+        if (!isNaN(val) && val > max) {
             alert(t('alert_size_limit', { max: max }));
             sizeInput.value = max;
-        } else if (val < 100) {
+        }
+    });
+    sizeInput.addEventListener('blur', () => {
+        let val = parseInt(sizeInput.value);
+        if (isNaN(val) || val < 100) {
             sizeInput.value = 100;
         }
     });
