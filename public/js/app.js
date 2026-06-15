@@ -1,3 +1,36 @@
+function showAlert(message) {
+    let toast = document.getElementById('custom-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'custom-toast';
+        toast.style.position = 'fixed';
+        toast.style.top = '20px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.backgroundColor = 'var(--error-color, #ef4444)';
+        toast.style.color = 'white';
+        toast.style.padding = '12px 24px';
+        toast.style.borderRadius = '8px';
+        toast.style.zIndex = '9999';
+        toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+        toast.style.transition = 'opacity 0.3s ease';
+        toast.style.fontSize = '14px';
+        toast.style.fontWeight = '500';
+        toast.style.textAlign = 'center';
+        document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.style.opacity = '1';
+    toast.style.display = 'block';
+    
+    if (toast.timeoutId) clearTimeout(toast.timeoutId);
+    toast.timeoutId = setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => { if(toast.style.opacity === '0') toast.style.display = 'none'; }, 300);
+    }, 3000);
+}
+window.alert = showAlert;
+
 const i18n = {
     "title": {"zh": "二维码工作室", "en": "QR Code Studio"},
     "tab_single": {"zh": "单张生成", "en": "Single Generation"},
