@@ -1,33 +1,50 @@
 function showAlert(message) {
+    if (!message) return;
+    console.warn('[QR Code Studio]', message);
+    
+    // Inject toast animation keyframes once
+    if (!document.getElementById('toast-keyframes')) {
+        const style = document.createElement('style');
+        style.id = 'toast-keyframes';
+        style.textContent = '@keyframes toastSlideIn{from{opacity:0;transform:translateX(-50%) translateY(-16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+        document.head.appendChild(style);
+    }
+    
     let toast = document.getElementById('custom-toast');
     if (!toast) {
         toast = document.createElement('div');
         toast.id = 'custom-toast';
-        toast.style.position = 'fixed';
-        toast.style.top = '20px';
-        toast.style.left = '50%';
-        toast.style.transform = 'translateX(-50%)';
-        toast.style.backgroundColor = 'var(--error-color, #ef4444)';
-        toast.style.color = 'white';
-        toast.style.padding = '12px 24px';
-        toast.style.borderRadius = '8px';
-        toast.style.zIndex = '9999';
-        toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-        toast.style.transition = 'opacity 0.3s ease';
-        toast.style.fontSize = '14px';
-        toast.style.fontWeight = '500';
-        toast.style.textAlign = 'center';
         document.body.appendChild(toast);
     }
-    toast.textContent = message;
-    toast.style.opacity = '1';
-    toast.style.display = 'block';
     
-    if (toast.timeoutId) clearTimeout(toast.timeoutId);
-    toast.timeoutId = setTimeout(() => {
+    // Atomic cssText for reliable cross-browser rendering
+    toast.style.cssText = [
+        'position:fixed',
+        'top:20px',
+        'left:50%',
+        'transform:translateX(-50%)',
+        'background:#ef4444',
+        'color:white',
+        'padding:14px 36px',
+        'border-radius:10px',
+        'z-index:99999',
+        'font-size:15px',
+        'font-weight:600',
+        'text-align:center',
+        'opacity:1',
+        'display:block',
+        'box-shadow:0 4px 24px rgba(239,68,68,0.45)',
+        'animation:toastSlideIn 0.35s ease',
+        'pointer-events:none'
+    ].join(';');
+    toast.textContent = message;
+    
+    if (toast._timeout) clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => {
         toast.style.opacity = '0';
-        setTimeout(() => { if(toast.style.opacity === '0') toast.style.display = 'none'; }, 300);
-    }, 3000);
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => { toast.style.display = 'none'; }, 300);
+    }, 4000);
 }
 window.alert = showAlert;
 
@@ -211,8 +228,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Size Input Validation
     const validateSize = () => {
         const max = parseInt(sizeInput.max) || 1000;
-        let val = parseInt(sizeInput.value);
-        if ((sizeInput.validity && sizeInput.validity.rangeOverflow) || (!isNaN(val) && val > max)) {
+        const raw = sizeInput.value.trim();
+        let val = parseInt(raw);
+        // Use explicit numeric check (more reliable than validity API)
+        if (raw !== '' && !isNaN(val) && val > max) {
             alert(t('alert_size_limit', { max: max }));
             sizeInput.value = max;
         }
