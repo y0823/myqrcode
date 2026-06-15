@@ -28,7 +28,8 @@ const i18n = {
     "text_batch_success": {"zh": "{n} 个二维码已成功生成。", "en": "{n} QR Codes generated successfully."},
     "alert_batch_error": {"zh": "批量生成二维码失败", "en": "Error generating batch QR codes"},
     "text_copied": {"zh": "已复制！", "en": "Copied!"},
-    "alert_copy_failed": {"zh": "复制到剪贴板失败。请确保您使用的是 HTTPS 或 localhost。", "en": "Failed to copy to clipboard. Ensure you are using HTTPS or localhost."}
+    "alert_copy_failed": {"zh": "复制到剪贴板失败。请确保您使用的是 HTTPS 或 localhost。", "en": "Failed to copy to clipboard. Ensure you are using HTTPS or localhost."},
+    "btn_remove_file": {"zh": "移除文件", "en": "Remove File"}
 };
 
 let currentLang = 'zh';
@@ -74,6 +75,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const singleText = document.getElementById('qr-text');
     const batchText = document.getElementById('qr-batch-text');
     const batchFileInput = document.getElementById('qr-batch-file');
+    const batchInputArea = document.getElementById('batch-input-area');
+    const batchFileInfo = document.getElementById('batch-file-info');
+    const batchFilename = document.getElementById('batch-filename');
+    const batchFilelines = document.getElementById('batch-filelines');
+    const batchFileRemove = document.getElementById('batch-file-remove');
+    const batchUploadWrapper = document.getElementById('batch-upload-wrapper');
+    const batchFileLabel = document.getElementById('qr-batch-file-label');
+    const batchLineCount = document.getElementById('batch-line-count');
+    
     const sizeInput = document.getElementById('qr-size');
     const colorDark = document.getElementById('qr-color-dark');
     const colorLight = document.getElementById('qr-color-light');
@@ -161,15 +171,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const reader = new FileReader();
         reader.onload = function(evt) {
             const content = evt.target.result;
+            const texts = content.split('\n').map(t => t.trim()).filter(t => t);
+            if (texts.length > 100) {
+                alert(t('alert_batch_limit'));
+                batchFileInput.value = '';
+                return;
+            }
             batchText.value = content;
-            batchFileInput.value = '';
             // Trigger input event to update line count
             batchText.dispatchEvent(new Event('input'));
+            
+            // UI switch
+            batchInputArea.style.display = 'none';
+            batchUploadWrapper.style.display = 'none';
+            batchFileInfo.style.display = 'block';
+            batchFilename.textContent = file.name;
+            batchFilelines.textContent = texts.length;
         };
         reader.readAsText(file);
     });
 
-    const batchLineCount = document.getElementById('batch-line-count');
+    batchFileRemove.addEventListener('click', () => {
+        batchText.value = '';
+        batchFileInput.value = '';
+        batchInputArea.style.display = 'block';
+        batchUploadWrapper.style.display = 'block';
+        batchFileInfo.style.display = 'none';
+        batchText.dispatchEvent(new Event('input'));
+    });
+
     batchText.addEventListener('input', () => {
         const texts = batchText.value.split('\n').map(t => t.trim()).filter(t => t);
         const count = texts.length;
@@ -184,6 +214,19 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             batchLineCount.style.color = 'var(--text-secondary)';
             batchText.dataset.overlimit = 'false';
+        }
+
+        // Mutual exclusivity: disable file upload if textarea has content AND we are not in "uploaded file" mode
+        if (batchFileInfo.style.display !== 'block') {
+            if (count > 0) {
+                batchUploadWrapper.style.opacity = '0.5';
+                batchFileLabel.style.cursor = 'not-allowed';
+                batchFileInput.disabled = true;
+            } else {
+                batchUploadWrapper.style.opacity = '1';
+                batchFileLabel.style.cursor = 'pointer';
+                batchFileInput.disabled = false;
+            }
         }
     });
 
