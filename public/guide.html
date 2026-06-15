@@ -7,108 +7,34 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <style>
-        .guide-container {
-            max-width: 800px;
-            margin: 0 auto;
-            color: var(--text-primary);
-            line-height: 1.6;
-            padding: 2rem;
-            background: var(--panel-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--panel-border);
-            border-radius: 16px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-        .guide-container h1, .guide-container h2, .guide-container h3 {
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
-        .guide-container p, .guide-container ul {
-            margin-bottom: 1rem;
-            color: var(--text-secondary);
-        }
-        .guide-container li {
-            margin-left: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-        .guide-container code {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            font-family: monospace;
-            color: #a78bfa;
-        }
-        .guide-container pre {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 1rem;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin-bottom: 1.5rem;
-        }
-        .guide-container pre code {
-            background: none;
-            padding: 0;
-            color: #e2e8f0;
-        }
-        .back-link {
-            display: inline-block;
-            margin-bottom: 1.5rem;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        .back-link:hover {
-            color: var(--primary);
-        }
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 2rem;
-        }
-        .lang-switch {
-            display: flex;
-            gap: 0.5rem;
-            background: rgba(15, 23, 42, 0.6);
-            padding: 0.25rem;
-            border-radius: 8px;
-            border: 1px solid var(--panel-border);
-        }
-        .lang-switch button {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
-        }
-        .lang-switch button.active {
-            background: var(--primary);
-            color: white;
-        }
-        .section-en {
-            display: none;
-        }
+        .guide-container { max-width: 860px; margin: 0 auto; color: var(--text-primary); line-height: 1.75; padding: 2.5rem; background: var(--panel-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--panel-border); border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .guide-container h1 { font-size: 1.6rem; margin-top: 0; margin-bottom: 0.4rem; color: var(--primary); }
+        .guide-container h2 { font-size: 1.2rem; margin-top: 2.2rem; margin-bottom: 0.8rem; color: var(--primary); border-bottom: 1px solid var(--panel-border); padding-bottom: 0.4rem; }
+        .guide-container h3 { font-size: 1rem; margin-top: 1.5rem; margin-bottom: 0.6rem; color: var(--text-primary); }
+        .guide-container p, .guide-container ul, .guide-container ol { margin-bottom: 0.85rem; color: var(--text-secondary); font-size: 0.95rem; }
+        .guide-container li { margin-left: 1.5rem; margin-bottom: 0.5rem; }
+        .guide-container code { background: rgba(99, 102, 241, 0.15); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: 'SF Mono', monospace; color: #a78bfa; font-size: 0.9rem; }
+        .guide-container pre { background: rgba(0, 0, 0, 0.5); padding: 1rem 1.2rem; border-radius: 8px; overflow-x: auto; margin-bottom: 1.2rem; border: 1px solid var(--panel-border); }
+        .guide-container pre code { background: none; padding: 0; color: #e2e8f0; font-size: 0.85rem; }
+        .guide-container .tip-box { background: rgba(99, 102, 241, 0.08); border-left: 3px solid var(--primary); padding: 0.85rem 1.1rem; border-radius: 0 8px 8px 0; margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-secondary); }
+        .guide-container .warn-box { background: rgba(239, 68, 68, 0.08); border-left: 3px solid #ef4444; padding: 0.85rem 1.1rem; border-radius: 0 8px 8px 0; margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-secondary); }
+        .guide-container table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; font-size: 0.9rem; }
+        .guide-container th { background: rgba(99, 102, 241, 0.15); padding: 0.6rem 0.8rem; text-align: left; color: var(--text-primary); font-weight: 600; border-bottom: 2px solid var(--panel-border); }
+        .guide-container td { padding: 0.55rem 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text-secondary); }
+        .back-link { display: inline-block; margin-bottom: 1.5rem; color: var(--text-secondary); text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: color 0.3s; }
+        .back-link:hover { color: var(--primary); }
+        .header-container { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 2rem; }
+        .lang-switch { display: flex; gap: 0.5rem; background: rgba(15, 23, 42, 0.6); padding: 0.25rem; border-radius: 8px; border: 1px solid var(--panel-border); }
+        .lang-switch button { background: transparent; border: none; color: var(--text-secondary); padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.875rem; cursor: pointer; transition: all 0.3s; font-weight: 500; }
+        .lang-switch button.active { background: var(--primary); color: white; }
+        .section-en { display: none; }
     </style>
 </head>
 <body>
     <div class="app-container">
         <header class="header-container">
             <div class="logo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 3H10V10H3V3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M14 3H21V10H14V3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M14 14H21V21H14V14Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M3 14H10V21H3V14Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M10 10L14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 3H10V10H3V3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 3H21V10H14V3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 14H21V21H14V14Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 14H10V21H3V14Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 10L14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 <span id="guide-title">使用说明</span>
             </div>
             <div class="lang-switch">
@@ -121,78 +47,316 @@
             <div class="guide-container">
                 <a href="/" class="back-link" id="back-btn">← 返回生成器</a>
 
-                <!-- 中文版 -->
+                <!-- ==================== 中文版 ==================== -->
                 <div id="content-zh" class="section-zh">
                     <h1>二维码工作室 - 使用指南</h1>
-                    <p>欢迎使用二维码工作室，本工具支持高自由度定制的现代化二维码生成以及强大的 REST API 接口。</p>
-                    
-                    <h2>1. 基本操作</h2>
+                    <p>欢迎使用二维码工作室。本工具支持高自由度定制的单张及批量二维码生成，配备完善的输入校验系统，并开放 REST API 供外部系统调用。</p>
+
+                    <h2>1. 界面概览</h2>
+                    <p>主界面分为左右两栏：</p>
                     <ul>
-                        <li><strong>单张生成</strong>：在文本框内粘贴 URL、文本，点击生成后即可在右侧预览。点击“下载”或“复制图片”即可提取。</li>
-                        <li><strong>批量生成</strong>：在批量输入框内输入多行内容（每行一条），系统会生成对应的多张二维码并打包为 <code>.zip</code> 文件供一键下载。</li>
-                        <li><strong>自定义样式</strong>：您可以调整像素大小，使用色彩轮盘修改二维码颜色与背景色，或者点击“选择文件”嵌入自定义中心 Logo。</li>
+                        <li><strong>左侧 — 控制面板</strong>：「单张生成」和「批量生成」两个标签页切换，输入内容后可调节尺寸、颜色、上传 Logo。</li>
+                        <li><strong>右侧 — 预览面板</strong>：实时显示生成结果，提供下载、复制图片等操作。</li>
+                    </ul>
+                    <p>右上角有中英文切换按钮。点击顶部「📖 使用说明」可随时回到本页面。</p>
+
+                    <!-- ======== 单张生成 ======== -->
+                    <h2>2. 单张生成</h2>
+                    <ol>
+                        <li>选中 <strong>"单张生成"</strong> 标签页。</li>
+                        <li>在文本框中输入需要编码的内容——网址、文本或任意数据。</li>
+                        <li>按需调节尺寸、二维码颜色和背景颜色（详见<a href="#sec-custom">第 5 节</a>）。</li>
+                        <li>可选：点击 Logo 区域「选择文件」上传一张图片作为中心 Logo。</li>
+                        <li>点击 <strong>"生成二维码"</strong>。</li>
+                        <li>右侧预览区显示结果。可执行：<strong>下载</strong>（保存 <code>qrcode.png</code>）或 <strong>复制图片</strong>（粘贴到文档/聊天中）。</li>
+                    </ol>
+
+                    <h3>2.1 单张模式的限制规则</h3>
+                    <table>
+                        <tr><th>限制项</th><th>数值</th><th>超限行为</th></tr>
+                        <tr><td>文本长度</td><td>≤ 100 个字符</td><td>自动截断至 100 字符，弹出红色 toast：「单条内容长度不能超过 100 个字符」</td></tr>
+                        <tr><td>图片尺寸</td><td>100–1000 px</td><td>输入 &gt;1000 时弹窗「当前模式下尺寸不能超过 1000px」并自动修正为 1000；输入非数字（如字母）时弹窗「请输入有效的数字（100-1000）」并重置为 300</td></tr>
+                    </table>
+                    <div class="tip-box">
+                        💡 <strong>实时计数</strong>：文本框右上方实时显示 <code>N / 100</code> 字符数。达到上限时数字变红。
+                    </div>
+                    <div class="tip-box">
+                        💡 <strong>清空按钮</strong>：输入内容后，标签行右侧出现 <code>× 清空</code> 按钮。点击一键将文本框恢复为空白初始状态。
+                    </div>
+
+                    <!-- ======== 批量生成 ======== -->
+                    <h2>3. 批量生成</h2>
+                    <ol>
+                        <li>选中 <strong>"批量生成"</strong> 标签页。</li>
+                        <li>选择输入方式：
+                            <ul>
+                                <li><strong>手动输入</strong>：在文本框中每行写一条内容（每行独立生成一个二维码）。</li>
+                                <li><strong>上传 TXT 文件</strong>：点击「📄 上传 TXT 文件」，选择一个 <code>.txt</code> 文件，内容自动加载。</li>
+                            </ul>
+                        </li>
+                        <li>点击 <strong>"生成二维码"</strong>。生成过程中显示「生成中…」。</li>
+                        <li>完成后，点击 <strong>"全部下载 (ZIP压缩包)"</strong> 一次性获取所有二维码。</li>
+                    </ol>
+
+                    <h3>3.1 批量模式的限制规则</h3>
+                    <table>
+                        <tr><th>限制项</th><th>数值</th><th>超限行为</th></tr>
+                        <tr><td>批量条目数</td><td>≤ 100 条</td><td>弹窗「批量生成最多支持100条内容」，上传 TXT 文件时也会校验</td></tr>
+                        <tr><td>单条文本长度</td><td>≤ 100 字符/条</td><td>逐条校验，超长行自动截断并弹窗提示</td></tr>
+                        <tr><td>图片尺寸</td><td>100–500 px</td><td>输入 &gt;500 时弹窗「当前模式下尺寸不能超过 500px」并自动修正为 500；非数字同理弹窗重置为 300</td></tr>
+                        <tr><td>API 频率限制</td><td>5 次/分钟/IP</td><td>后端返回 429 错误</td></tr>
+                    </table>
+                    <div class="tip-box">
+                        💡 <strong>实时计数</strong>：文本框右上方实时显示 <code>N / 100</code> 条数。超限时数字变红并弹窗。
+                    </div>
+                    <div class="tip-box">
+                        💡 <strong>清空按钮与文件联动</strong>：点击 <code>× 清空</code> 不仅清空文本，同时移除已上传的 TXT 文件、恢复文本输入区域，方便重新开始。
+                    </div>
+                    <div class="warn-box">
+                        ⚠ <strong>互斥机制</strong>：手动输入内容后，上传 TXT 按钮自动禁用（半透明），防止误操作覆盖已有数据。清空文本后恢复可用。
+                    </div>
+
+                    <!-- ======== 校验系统详解 ======== -->
+                    <h2>4. 输入校验系统 — 完整参考</h2>
+                    <p>以下是所有校验规则的完整技术说明，涵盖触发时机、提示方式和自动修正行为。</p>
+
+                    <h3>4.1 单条文本长度 — 100 字符上限</h3>
+                    <ul>
+                        <li><strong>适用范围</strong>：单张生成的内容框、批量生成的每一行内容。</li>
+                        <li><strong>触发时机</strong>：实时检测。每输入一个字符，系统立即计算当前长度。一旦 <code>length &gt; 100</code>，<strong>在同一输入事件中</strong>完成截断和弹窗。</li>
+                        <li><strong>具体行为</strong>：
+                            <ol>
+                                <li>字符计数器变红。</li>
+                                <li>文本框内容被截取前 100 个字符（<code>substring(0, 100)</code>）。</li>
+                                <li>页面顶部弹出红色 toast 通知，文案为「单条内容长度不能超过 100 个字符」，4 秒后自动消失。</li>
+                            </ol>
+                        </li>
+                        <li><strong>后端二次校验</strong>：API 接口同样检查 <code>text.length &gt; 100</code>，超限返回 400 错误。前后双重保障。</li>
+                        <li><strong>批量模式特殊说明</strong>：批量文本框中每行独立校验，超长行截断该行（不影响其他行）。若多行同时超长，<strong>仅弹窗一次</strong>（防重复弹窗骚扰）。</li>
                     </ul>
 
-                    <h2>2. 实用技巧：生成自动连接的 WiFi 二维码</h2>
-                    <p>您可以在内容框输入以下格式文本，生成的二维码使用手机原生相机扫描后即可自动连接 WiFi：</p>
-                    <pre><code>WIFI:S:您的WiFi名称;T:WPA;P:您的密码;;</code></pre>
-                    <p><i>注意：结尾必须带上 <code>;;</code> 两个分号。</i></p>
+                    <h3>4.2 图片尺寸校验</h3>
+                    <p>尺寸输入框为 <code>type="number"</code>，接受键盘输入和鼠标滚轮/箭头调节。系统在以下三个层面进行校验：</p>
 
-                    <h2>3. 在 Excel 中使用 IMAGE 公式</h2>
-                    <p>在较新版本的 Excel (Office 365 / 2024) 中，您可以直接读取 A1 单元格内容并渲染二维码：</p>
+                    <h4>实时输入校验（input / keyup / change 事件）</h4>
+                    <ul>
+                        <li>取当前模式的 max 值（单张 1000、批量 500）。</li>
+                        <li>用户输入的数字一旦超过 max，立即弹窗「当前模式下尺寸不能超过 {max}px」，并自动将输入框值修正为 max。</li>
+                        <li>如果是合法数字且在范围内，不做任何干预。</li>
+                    </ul>
+
+                    <h4>失焦校验（blur 事件）</h4>
+                    <ul>
+                        <li><strong>非数字输入</strong>：如果用户输入了字母、符号等无法解析为数字的内容（如 <code>abc</code>、<code>300px</code>），失去焦点时弹窗「请输入有效的数字（100-{max}）」，并将值重置为默认值 300。</li>
+                        <li><strong>低于最小值</strong>：若值 &lt; 100，静默修正为 100（不弹窗，仅做最小值兜底）。</li>
+                        <li><strong>超过最大值</strong>：二次兜底，修正为 max（blur 时再做一次安全网检查）。</li>
+                    </ul>
+
+                    <h4>模式切换时的自动适配</h4>
+                    <ul>
+                        <li>从单张切换到批量时，max 属性自动变为 500。若当前值 &gt; 500，自动降为 500（不弹窗，因这是模式切换而非用户输入）。</li>
+                        <li>从批量切换回单张时，max 恢复为 1000，当前值保持不变（不会自动放大）。</li>
+                    </ul>
+
+                    <h4>后端兜底</h4>
+                    <ul>
+                        <li>单张接口：<code>if (options.size &gt; 1000) options.size = 1000</code>。</li>
+                        <li>批量接口：<code>if (options.size &gt; 500) options.size = 500</code>。</li>
+                        <li>即使前端校验被绕过（如直接调 API），后端也会兜底修正。</li>
+                    </ul>
+
+                    <h3>4.3 批量数量限制</h3>
+                    <ul>
+                        <li><strong>上限</strong>：每批 100 条。</li>
+                        <li><strong>计数方式</strong>：按换行符拆分后，过滤空行，计算非空行数。</li>
+                        <li><strong>触发行为</strong>：
+                            <ul>
+                                <li>手动输入超过 100 行：计数器变红，弹窗提示「批量生成最多支持100条内容」。注意：<strong>不会截断内容</strong>（与文本长度不同），仅弹窗提示。用户需手动删除多余行。</li>
+                                <li>上传 TXT 文件超过 100 行：文件加载时校验，超限则弹窗并拒绝加载。</li>
+                            </ul>
+                        </li>
+                        <li><strong>后端校验</strong>：<code>if (texts.length &gt; 100)</code> 返回 400 错误。</li>
+                    </ul>
+
+                    <h3>4.4 Toast 通知系统</h3>
+                    <p>所有弹窗提示统一使用红色 toast（而非浏览器原生 <code>alert()</code> 对话框）：</p>
+                    <ul>
+                        <li><strong>样式</strong>：红色背景 <code>#ef4444</code>，白色文字，页面顶部居中，带下滑动画。</li>
+                        <li><strong>时长</strong>：显示 4 秒后淡出消失。</li>
+                        <li><strong>可叠加</strong>：新 toast 出现时自动覆盖旧 toast（取消旧定时器，刷新内容和显示时长）。</li>
+                        <li><strong>降级保障</strong>：同时输出到浏览器 Console（<code>console.warn</code>），开发者可在控制台查看所有校验记录。</li>
+                    </ul>
+
+                    <!-- ======== 自定义外观 ======== -->
+                    <h2 id="sec-custom">5. 自定义外观</h2>
+                    <h3>颜色设置</h3>
+                    <p>两个独立的 HTML5 色彩轮盘分别控制<strong>二维码颜色</strong>（默认 <code>#000000</code>）和<strong>背景颜色</strong>（默认 <code>#ffffff</code>）。选色器右侧实时显示当前 Hex 值。</p>
+
+                    <h3>中心 Logo</h3>
+                    <p>支持 PNG / JPG / GIF / WebP 等常见格式。上传后自动缩放至二维码宽度的 <strong>25%</strong>，保留透明通道。文件大小上限 <strong>500KB</strong>。</p>
+                    <div class="warn-box">
+                        ⚠ 系统使用最高纠错级别 <strong>H 级</strong>（可恢复约 30% 码字损坏），配合 25% Logo 尺寸约束，确保二维码在嵌入 Logo 后仍可正常扫描。
+                    </div>
+
+                    <!-- ======== 实用技巧 ======== -->
+                    <h2>6. 实用技巧</h2>
+                    <h3>WiFi 自动连接二维码</h3>
+                    <p>输入以下格式，手机原生相机扫描后自动连接 WiFi（无需手动输入密码）：</p>
+                    <pre><code>WIFI:S:WiFi名称;T:WPA;P:WiFi密码;;</code></pre>
+                    <p><i>结尾必须带 <code>;;</code>。加密类型 <code>T:WPA</code> 适用于大多数家用路由器，开放网络用 <code>T:nopass</code>。</i></p>
+
+                    <h3>Excel 动态二维码</h3>
+                    <p>在 Office 365 / Excel 2024 中，用 IMAGE 公式从单元格取值生成二维码：</p>
                     <pre><code>=IMAGE("http://localhost:3000/api/generate?text=" & ENCODEURL(A1))</code></pre>
-                    <p>若要自定义颜色（例如蓝色），记得将 <code>#</code> 转义为 <code>%23</code>：</p>
+                    <p>自定义颜色时，<code>#</code> 需转义为 <code>%23</code>：</p>
                     <pre><code>=IMAGE("http://localhost:3000/api/generate?size=200&colorDark=%230000FF&text=" & ENCODEURL(A1))</code></pre>
 
-                    <h2>4. API 接口文档 (面向开发者)</h2>
-                    <h3>单张生成 (POST / GET)</h3>
-                    <p>调用 <code>/api/generate</code>。支持 JSON 传参或 Form-Data（若需上传 Logo）。</p>
+                    <!-- ======== API ======== -->
+                    <h2>7. API 接口 (面向开发者)</h2>
+                    <p>后端基于 Express，参数详情和完整 cURL 示例见 <a href="https://github.com/y0823/myqrcode#readme" style="color: var(--primary);">README.md</a>。</p>
+                    <h3>单张生成</h3>
                     <pre><code>curl -X POST http://localhost:3000/api/generate \
   -H "Content-Type: application/json" \
   -d '{"text": "https://example.com", "size": 300}' \
   --output qrcode.png</code></pre>
-
-                    <h3>批量生成 (POST)</h3>
-                    <p>调用 <code>/api/generate-batch</code>，传入 <code>texts</code> 字符串数组，返回 ZIP 文件流。</p>
+                    <h3>批量生成</h3>
                     <pre><code>curl -X POST http://localhost:3000/api/generate-batch \
   -H "Content-Type: application/json" \
   -d '{"texts": ["https://google.com", "Hello"]}' \
   --output batch.zip</code></pre>
                 </div>
 
-                <!-- 英文版 -->
+                <!-- ==================== 英文版 ==================== -->
                 <div id="content-en" class="section-en">
                     <h1>QR Code Studio - User Guide</h1>
-                    <p>Welcome to QR Code Studio, a modern web app for generating highly customizable QR codes with powerful REST API support.</p>
-                    
-                    <h2>1. Basic Operations</h2>
+                    <p>Welcome to QR Code Studio — a modern QR code generator with single &amp; batch modes, comprehensive input validation, and a REST API for external integrations.</p>
+
+                    <h2>1. Interface Overview</h2>
                     <ul>
-                        <li><strong>Single Generation</strong>: Paste a URL or text into the box, click generate, and preview it on the right. You can then download or copy the image directly to your clipboard.</li>
-                        <li><strong>Batch Generation</strong>: Input multiple lines of text. The system will generate a QR code for each line and package them into a single <code>.zip</code> archive for 1-click download.</li>
-                        <li><strong>Customization</strong>: You can adjust the pixel size, use the color pickers for foreground/background colors, and upload a custom Logo to embed in the center.</li>
+                        <li><strong>Left — Control Panel</strong>: Switch between Single and Batch tabs. Input content, adjust size/colors, and upload logos.</li>
+                        <li><strong>Right — Preview Panel</strong>: Live preview of generated QR codes, with download and copy actions.</li>
+                    </ul>
+                    <p>Use the language toggle (中文 / EN) in the top-right corner. Click «📖 Guide» in the header to return here.</p>
+
+                    <h2>2. Single Generation</h2>
+                    <ol>
+                        <li>Select the <strong>"Single Generation"</strong> tab.</li>
+                        <li>Enter the content to encode — URL, text, or any data.</li>
+                        <li>Adjust size, colors, and optionally upload a logo (see <a href="#sec-custom-en">section 5</a>).</li>
+                        <li>Click <strong>"Generate QR Code"</strong>.</li>
+                        <li>Use <strong>Download</strong> (saves <code>qrcode.png</code>) or <strong>Copy Image</strong> (pastes into documents/chats).</li>
+                    </ol>
+
+                    <h3>2.1 Single Mode Limits</h3>
+                    <table>
+                        <tr><th>Constraint</th><th>Value</th><th>Violation Behavior</th></tr>
+                        <tr><td>Text length</td><td>≤ 100 chars</td><td>Auto-truncate to 100, red toast: "Content length cannot exceed 100 characters per item"</td></tr>
+                        <tr><td>Image size</td><td>100–1000 px</td><td>&gt;1000: alert and cap to 1000. Non-numeric: alert and reset to 300</td></tr>
+                    </table>
+                    <div class="tip-box">💡 <strong>Live counter</strong>: <code>N / 100</code> shown above the text box. Turns red when over limit.</div>
+                    <div class="tip-box">💡 <strong>Clear button</strong>: <code>× 清空</code> appears next to the counter when content is present. One-click reset.</div>
+
+                    <h2>3. Batch Generation</h2>
+                    <ol>
+                        <li>Select the <strong>"Batch Generation"</strong> tab.</li>
+                        <li>Input method:
+                            <ul>
+                                <li><strong>Manual</strong>: One item per line (one QR code per line).</li>
+                                <li><strong>Upload TXT</strong>: Click «📄 Upload TXT File» and select a <code>.txt</code> file.</li>
+                            </ul>
+                        </li>
+                        <li>Click <strong>"Generate QR Code"</strong>.</li>
+                        <li>Click <strong>"Download All (ZIP)"</strong> to get a single archive of all QR codes.</li>
+                    </ol>
+
+                    <h3>3.1 Batch Mode Limits</h3>
+                    <table>
+                        <tr><th>Constraint</th><th>Value</th><th>Violation Behavior</th></tr>
+                        <tr><td>Item count</td><td>≤ 100 items</td><td>Alert: "Batch generation supports a maximum of 100 items"</td></tr>
+                        <tr><td>Per-item length</td><td>≤ 100 chars</td><td>Auto-truncate per line with alert</td></tr>
+                        <tr><td>Image size</td><td>100–500 px</td><td>&gt;500: alert and cap to 500. Non-numeric: alert and reset to 300</td></tr>
+                        <tr><td>API rate limit</td><td>5 req/min/IP</td><td>HTTP 429</td></tr>
+                    </table>
+                    <div class="tip-box">💡 <strong>Live counter</strong>: <code>N / 100</code> items shown in real time.</div>
+                    <div class="tip-box">💡 <strong>Clear + File Reset</strong>: <code>× 清空</code> clears text AND removes uploaded TXT file, restoring text input mode.</div>
+                    <div class="warn-box">⚠ <strong>Mutual exclusion</strong>: Typing disables file upload (dimmed). Clear to re-enable.</div>
+
+                    <h2>4. Validation System — Full Reference</h2>
+
+                    <h3>4.1 Text Length — 100-Character Cap</h3>
+                    <ul>
+                        <li><strong>Scope</strong>: Single content box and every line in batch mode.</li>
+                        <li><strong>Trigger</strong>: Real-time on every keystroke. Once <code>length &gt; 100</code>, truncation and alert happen in the same input event.</li>
+                        <li><strong>Behavior</strong>: Counter turns red → text truncated to 100 chars → red toast notification for 4 seconds.</li>
+                        <li><strong>Backend re-check</strong>: API returns 400 if <code>text.length &gt; 100</code>.</li>
+                        <li><strong>Batch nuance</strong>: Each line validated independently. Only one alert fires even if multiple lines exceed limit.</li>
                     </ul>
 
-                    <h2>2. Pro Tip: WiFi Auto-Connect QR Codes</h2>
-                    <p>You can generate a QR code that automatically connects smartphones to your WiFi by entering this exact format:</p>
-                    <pre><code>WIFI:S:YourNetworkName;T:WPA;P:YourPassword;;</code></pre>
-                    <p><i>Note: It must end with two semicolons <code>;;</code></i></p>
+                    <h3>4.2 Size Validation</h3>
+                    <p>The size input (<code>type="number"</code>) is checked at three stages:</p>
+                    <h4>Real-time (input/keyup/change)</h4>
+                    <ul>
+                        <li>Compares against current mode's max (1000 single / 500 batch).</li>
+                        <li>If exceeded: alert + auto-correct to max.</li>
+                    </ul>
+                    <h4>On blur</h4>
+                    <ul>
+                        <li><strong>Non-numeric</strong> (e.g. "abc", "300px"): alert "Please enter a valid number (100-{max})" and reset to 300.</li>
+                        <li><strong>Below 100</strong>: silently correct to 100.</li>
+                        <li><strong>Above max</strong>: secondary safety cap to max.</li>
+                    </ul>
+                    <h4>Mode switch</h4>
+                    <ul>
+                        <li>Single → Batch: max becomes 500, value capped silently (mode change, not user input).</li>
+                        <li>Batch → Single: max restored to 1000, value unchanged.</li>
+                    </ul>
+                    <h4>Backend fallback</h4>
+                    <ul>
+                        <li>Single: <code>if (size &gt; 1000) size = 1000</code>.</li>
+                        <li>Batch: <code>if (size &gt; 500) size = 500</code>.</li>
+                    </ul>
 
-                    <h2>3. Excel IMAGE Formula Integration</h2>
-                    <p>In modern Excel (Office 365 / 2024), you can render QR codes directly from cell contents (e.g., A1):</p>
+                    <h3>4.3 Batch Item Count</h3>
+                    <ul>
+                        <li><strong>Cap</strong>: 100 items per batch.</li>
+                        <li><strong>Count method</strong>: Split by newline, filter empty lines.</li>
+                        <li><strong>Manual overflow</strong>: Counter turns red + alert. Content is NOT truncated — user must manually reduce lines.</li>
+                        <li><strong>File upload overflow</strong>: File rejected with alert.</li>
+                        <li><strong>Backend</strong>: 400 error if <code>texts.length &gt; 100</code>.</li>
+                    </ul>
+
+                    <h3>4.4 Toast Notification System</h3>
+                    <ul>
+                        <li>Red (<code>#ef4444</code>) toast at top-center with slide-in animation.</li>
+                        <li>4-second display then fade-out.</li>
+                        <li>New toast replaces previous (cancels old timer).</li>
+                        <li>Also logged to browser console via <code>console.warn</code> for debugging.</li>
+                    </ul>
+
+                    <h2 id="sec-custom-en">5. Customization</h2>
+                    <h3>Colors</h3>
+                    <p>Two native HTML5 color pickers for <strong>QR color</strong> (default <code>#000000</code>) and <strong>background</strong> (default <code>#ffffff</code>). Hex value shown beside each picker.</p>
+                    <h3>Center Logo</h3>
+                    <p>Supports PNG / JPG / GIF / WebP. Auto-resized to <strong>25%</strong> of QR width, alpha channel preserved. File size limit: <strong>500KB</strong>.</p>
+                    <div class="warn-box">⚠ Uses error correction level <strong>H</strong> (~30% recovery) to maintain scannability with logo overlay.</div>
+
+                    <h2>6. Pro Tips</h2>
+                    <h3>WiFi Auto-Connect QR</h3>
+                    <pre><code>WIFI:S:NetworkName;T:WPA;P:Password;;</code></pre>
+                    <p><i>Must end with <code>;;</code>. Use <code>T:nopass</code> for open networks.</i></p>
+                    <h3>Excel Dynamic QR</h3>
                     <pre><code>=IMAGE("http://localhost:3000/api/generate?text=" & ENCODEURL(A1))</code></pre>
-                    <p>To use custom colors (e.g., blue), escape the <code>#</code> symbol as <code>%23</code>:</p>
+                    <p>Escape <code>#</code> as <code>%23</code> for custom colors:</p>
                     <pre><code>=IMAGE("http://localhost:3000/api/generate?size=200&colorDark=%230000FF&text=" & ENCODEURL(A1))</code></pre>
 
-                    <h2>4. API Documentation (For Developers)</h2>
-                    <h3>Single Generation (POST / GET)</h3>
-                    <p>Call <code>/api/generate</code>. Supports JSON or Form-Data (required if uploading a logo).</p>
+                    <h2>7. API (For Developers)</h2>
+                    <p>Express backend. Full parameter specs and cURL examples at <a href="https://github.com/y0823/myqrcode#readme" style="color: var(--primary);">README.md</a>.</p>
+                    <h3>Single</h3>
                     <pre><code>curl -X POST http://localhost:3000/api/generate \
   -H "Content-Type: application/json" \
   -d '{"text": "https://example.com", "size": 300}' \
   --output qrcode.png</code></pre>
-
-                    <h3>Batch Generation (POST)</h3>
-                    <p>Call <code>/api/generate-batch</code> with a <code>texts</code> array to receive a ZIP archive.</p>
+                    <h3>Batch</h3>
                     <pre><code>curl -X POST http://localhost:3000/api/generate-batch \
   -H "Content-Type: application/json" \
   -d '{"texts": ["https://google.com", "Hello"]}' \
@@ -209,36 +373,21 @@
         const contentEn = document.getElementById('content-en');
         const backBtn = document.getElementById('back-btn');
         const guideTitle = document.getElementById('guide-title');
-
         btnZh.addEventListener('click', () => {
-            btnZh.classList.add('active');
-            btnEn.classList.remove('active');
-            contentZh.style.display = 'block';
-            contentEn.style.display = 'none';
-            backBtn.textContent = '← 返回生成器';
-            guideTitle.textContent = '使用说明';
-            document.title = '使用说明 - 二维码工作室';
-            document.documentElement.lang = 'zh-CN';
+            btnZh.classList.add('active'); btnEn.classList.remove('active');
+            contentZh.style.display = 'block'; contentEn.style.display = 'none';
+            backBtn.textContent = '← 返回生成器'; guideTitle.textContent = '使用说明';
+            document.title = '使用说明 - 二维码工作室'; document.documentElement.lang = 'zh-CN';
             localStorage.setItem('qr-lang', 'zh');
         });
-
         btnEn.addEventListener('click', () => {
-            btnEn.classList.add('active');
-            btnZh.classList.remove('active');
-            contentEn.style.display = 'block';
-            contentZh.style.display = 'none';
-            backBtn.textContent = '← Back to Generator';
-            guideTitle.textContent = 'User Guide';
-            document.title = 'User Guide - QR Studio';
-            document.documentElement.lang = 'en';
+            btnEn.classList.add('active'); btnZh.classList.remove('active');
+            contentEn.style.display = 'block'; contentZh.style.display = 'none';
+            backBtn.textContent = '← Back to Generator'; guideTitle.textContent = 'User Guide';
+            document.title = 'User Guide - QR Studio'; document.documentElement.lang = 'en';
             localStorage.setItem('qr-lang', 'en');
         });
-
-        // Initialize from localStorage if available
-        const savedLang = localStorage.getItem('qr-lang');
-        if (savedLang === 'en') {
-            btnEn.click();
-        }
+        if (localStorage.getItem('qr-lang') === 'en') btnEn.click();
     </script>
 </body>
 </html>
