@@ -30,7 +30,8 @@ const i18n = {
     "text_copied": {"zh": "已复制！", "en": "Copied!"},
     "alert_copy_failed": {"zh": "复制到剪贴板失败。请确保您使用的是 HTTPS 或 localhost。", "en": "Failed to copy to clipboard. Ensure you are using HTTPS or localhost."},
     "btn_remove_file": {"zh": "移除文件", "en": "Remove File"},
-    "alert_length_limit": {"zh": "单条内容长度不能超过100个字符", "en": "Content length cannot exceed 100 characters per item"}
+    "alert_length_limit": {"zh": "单条内容长度不能超过100个字符", "en": "Content length cannot exceed 100 characters per item"},
+    "alert_size_limit": {"zh": "当前模式下尺寸不能超过 {max}px", "en": "Size cannot exceed {max}px in current mode"}
 };
 
 let currentLang = 'zh';
@@ -173,7 +174,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Color Pickers logic
+    // Size Input Validation
+    sizeInput.addEventListener('change', () => {
+        const max = parseInt(sizeInput.max) || 1000;
+        let val = parseInt(sizeInput.value);
+        if (val > max) {
+            alert(t('alert_size_limit', { max: max }));
+            sizeInput.value = max;
+        } else if (val < 100) {
+            sizeInput.value = 100;
+        }
+    });
+
+    // File Upload Handlers logic
     colorDark.addEventListener('input', (e) => colorDarkHex.textContent = e.target.value);
     colorLight.addEventListener('input', (e) => colorLightHex.textContent = e.target.value);
 
