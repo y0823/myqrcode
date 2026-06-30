@@ -34,7 +34,7 @@ const upload = multer({
 });
 
 /**
- * Generate a single QR Code image buffer with optional logo
+ * Generate a single QR Code image buffer with optional logo (PNG)
  */
 async function generateQRCodeBuffer(text, options, logoBuffer) {
   const size = parseInt(options.size) || 300;
@@ -74,25 +74,81 @@ async function generateQRCodeBuffer(text, options, logoBuffer) {
   }
 }
 
+/**
+ * Generate a single QR Code SVG string with optional logo
+ */
+async function generateQRCodeSVG(text, options, logoBuffer, logoMimeType) {
+  const margin = parseInt(options.margin) || 4;
+  const colorDark = options.colorDark || '#000000';
+  const colorLight = options.colorLight || '#ffffff';
+
+  let qrSvg = await QRCode.toString(text, {
+    type: 'svg',
+    margin: margin,
+    color: {
+      dark: colorDark,
+      light: colorLight
+    },
+    errorCorrectionLevel: 'H' // Highest error correction for logo embedding
+  });
+
+  if (!logoBuffer) {
+    return qrSvg;
+  }
+
+  try {
+    const match = qrSvg.match(/viewBox="([^"]+)"/);
+    if (match) {
+      const viewBox = match[1].split(' ').map(Number);
+      const w = viewBox[2];
+      const h = viewBox[3];
+      
+      // Logo size (22% of QR width to prevent scanner obstruction)
+      const logoSize = w * 0.22;
+      const x = (w - logoSize) / 2;
+      const y = (h - logoSize) / 2;
+      
+      const mime = logoMimeType || 'image/png';
+      const logoDataUrl = `data:${mime};base64,${logoBuffer.toString('base64')}`;
+      
+      // Embed white (or colorLight) background rect and the logo image
+      const logoSvgElements = `
+  <rect x="${x}" y="${y}" width="${logoSize}" height="${logoSize}" fill="${colorLight}" rx="${logoSize * 0.15}" />
+  <image x="${x + logoSize * 0.05}" y="${y + logoSize * 0.05}" width="${logoSize * 0.9}" height="${logoSize * 0.9}" href="${logoDataUrl}" />
+`;
+      qrSvg = qrSvg.replace('</svg>', `${logoSvgElements}</svg>`);
+    }
+    return qrSvg;
+  } catch (error) {
+    console.error('Error generating SVG with logo:', error);
+    return qrSvg;
+  }
+}
+
 // Routes
 app.get('/api/generate', async (req, res) => {
   try {
-    const { text, size, margin, colorDark, colorLight } = req.query;
+    const { text, size, margin, colorDark, colorLight, format } = req.query;
     
     if (!text) {
       return res.status(400).json({ error: 'Text is required' });
     }
-    if (text.length > 100) {
-      return res.status(400).json({ error: 'Text length cannot exceed 100 characters' });
+    if (text.length > 500) {
+      return res.status(400).json({ error: 'Text length cannot exceed 500 characters' });
     }
 
     const options = { size, margin, colorDark, colorLight };
     if (options.size > 1000) options.size = 1000;
-    // GET requests usually don't support file uploads easily, so no logoBuffer
-    const finalImageBuffer = await generateQRCodeBuffer(text, options, null);
 
-    res.set('Content-Type', 'image/png');
-    res.send(finalImageBuffer);
+    if (format === 'svg') {
+      const finalSvgString = await generateQRCodeSVG(text, options, null, null);
+      res.set('Content-Type', 'image/svg+xml');
+      res.send(finalSvgString);
+    } else {
+      const finalImageBuffer = await generateQRCodeBuffer(text, options, null);
+      res.set('Content-Type', 'image/png');
+      res.send(finalImageBuffer);
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to generate QR code' });
@@ -101,23 +157,29 @@ app.get('/api/generate', async (req, res) => {
 
 app.post('/api/generate', upload.single('logo'), async (req, res) => {
   try {
-    const { text, size, margin, colorDark, colorLight } = req.body;
+    const { text, size, margin, colorDark, colorLight, format } = req.body;
     
     if (!text) {
       return res.status(400).json({ error: 'Text is required' });
     }
-    if (text.length > 100) {
-      return res.status(400).json({ error: 'Text length cannot exceed 100 characters' });
+    if (text.length > 500) {
+      return res.status(400).json({ error: 'Text length cannot exceed 500 characters' });
     }
 
     const options = { size, margin, colorDark, colorLight };
     if (options.size > 1000) options.size = 1000;
     const logoBuffer = req.file ? req.file.buffer : null;
+    const logoMimeType = req.file ? req.file.mimetype : null;
 
-    const finalImageBuffer = await generateQRCodeBuffer(text, options, logoBuffer);
-
-    res.set('Content-Type', 'image/png');
-    res.send(finalImageBuffer);
+    if (format === 'svg') {
+      const finalSvgString = await generateQRCodeSVG(text, options, logoBuffer, logoMimeType);
+      res.set('Content-Type', 'image/svg+xml');
+      res.send(finalSvgString);
+    } else {
+      const finalImageBuffer = await generateQRCodeBuffer(text, options, logoBuffer);
+      res.set('Content-Type', 'image/png');
+      res.send(finalImageBuffer);
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to generate QR code' });

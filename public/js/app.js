@@ -82,7 +82,35 @@ const i18n = {
     "btn_remove_file": {"zh": "移除文件", "en": "Remove File"},
     "alert_length_limit": {"zh": "单条内容长度不能超过100个字符", "en": "Content length cannot exceed 100 characters per item"},
     "alert_size_limit": {"zh": "当前模式下尺寸不能超过 {max}px", "en": "Size cannot exceed {max}px in current mode"},
-    "alert_size_invalid": {"zh": "请输入有效的数字（100-{max}）", "en": "Please enter a valid number (100-{max})"}
+    "alert_size_invalid": {"zh": "请输入有效的数字（100-{max}）", "en": "Please enter a valid number (100-{max})"},
+    "label_qr_type": {"zh": "二维码类型", "en": "QR Code Type"},
+    "type_text": {"zh": "文本/链接", "en": "Text/URL"},
+    "type_wifi": {"zh": "WiFi 网络", "en": "WiFi Network"},
+    "type_vcard": {"zh": "电子名片", "en": "vCard Contact"},
+    "label_wifi_ssid": {"zh": "WiFi 名称 (SSID)", "en": "WiFi Name (SSID)"},
+    "label_wifi_password": {"zh": "密码", "en": "Password"},
+    "label_wifi_security": {"zh": "加密类型", "en": "Security Type"},
+    "label_wifi_hidden": {"zh": "隐藏网络", "en": "Hidden SSID"},
+    "wifi_security_none": {"zh": "无加密 (Open)", "en": "No Encryption (Open)"},
+    "label_vcard_fn": {"zh": "姓名", "en": "Full Name"},
+    "label_vcard_org": {"zh": "公司 / 组织", "en": "Company / Org"},
+    "label_vcard_title": {"zh": "职位 / 头衔", "en": "Job Title"},
+    "label_vcard_tel": {"zh": "电话号码", "en": "Phone Number"},
+    "label_vcard_email": {"zh": "电子邮箱", "en": "Email Address"},
+    "label_vcard_url": {"zh": "网址", "en": "Website"},
+    "btn_download_png": {"zh": "下载 PNG", "en": "Download PNG"},
+    "btn_download_svg": {"zh": "下载 SVG", "en": "Download SVG"},
+    "alert_wifi_ssid_empty": {"zh": "请输入 WiFi SSID 名称", "en": "Please enter the WiFi SSID name"},
+    "alert_vcard_name_empty": {"zh": "请输入名片姓名", "en": "Please enter the vCard name"},
+    "alert_length_limit_500": {"zh": "单条内容长度不能超过500个字符", "en": "Content length cannot exceed 500 characters"},
+    "placeholder_wifi_ssid": {"zh": "请输入 WiFi 名称", "en": "Enter WiFi name (SSID)"},
+    "placeholder_wifi_password": {"zh": "请输入 WiFi 密码", "en": "Enter WiFi password"},
+    "placeholder_vcard_fn": {"zh": "例如：张三", "en": "e.g. John Doe"},
+    "placeholder_vcard_org": {"zh": "公司或学校名称", "en": "Company or school name"},
+    "placeholder_vcard_title": {"zh": "例如：产品经理", "en": "e.g. Product Manager"},
+    "placeholder_vcard_tel": {"zh": "请输入手机或电话号码", "en": "Enter cell or work phone number"},
+    "placeholder_vcard_email": {"zh": "example@email.com", "en": "example@email.com"},
+    "placeholder_vcard_url": {"zh": "https://example.com", "en": "https://example.com"}
 };
 
 let currentLang = 'zh';
@@ -125,6 +153,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
     
+    // QR Type Selector Elements
+    const typeBtns = document.querySelectorAll('.type-btn');
+    const typeForms = document.querySelectorAll('.type-forms'); // Wait, we can just toggle style.display on forms directly by ID
+    
     const singleText = document.getElementById('qr-text');
     const singleCharCount = document.getElementById('single-char-count');
     const singleClearBtn = document.getElementById('single-clear-btn');
@@ -159,9 +191,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const batchActions = document.getElementById('batch-actions');
     const copyBtn = document.getElementById('copy-btn');
     const downloadBtn = document.getElementById('download-btn');
+    const downloadSvgBtn = document.getElementById('download-svg-btn');
     const downloadBatchBtn = document.getElementById('download-batch-btn');
 
     let currentMode = 'single'; // 'single' or 'batch'
+    let currentSingleType = 'text'; // 'text', 'wifi', or 'vcard'
     let lastGeneratedBlob = null;
     let lastGeneratedBatchBlob = null;
 
@@ -221,6 +255,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 sizeInput.max = 1000;
             }
             
+            resetPreviewUI();
+        });
+    });
+
+    // QR Type Selector Switch
+    typeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            typeBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            currentSingleType = btn.getAttribute('data-type');
+            
+            // Hide all single type forms and show active one
+            document.querySelectorAll('.type-form').forEach(f => f.style.display = 'none');
+            document.getElementById(`type-form-${currentSingleType}`).style.display = 'block';
+            
+            // Show/hide char count & clear btn
+            if (currentSingleType === 'text') {
+                singleCharCount.style.display = 'block';
+                singleClearBtn.style.display = singleText.value.length > 0 ? 'block' : 'none';
+            } else {
+                singleCharCount.style.display = 'none';
+                singleClearBtn.style.display = 'none';
+            }
             resetPreviewUI();
         });
     });
@@ -296,12 +354,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (singleText) singleText.removeAttribute('maxlength'); // Bypass cached HTML restrictions
     singleText.addEventListener('input', () => {
         const count = singleText.value.length;
-        singleCharCount.textContent = `${count} / 100`;
-        if (count > 100) {
+        singleCharCount.textContent = `${count} / 500`;
+        if (count > 500) {
             singleCharCount.style.color = 'red';
-            singleText.value = singleText.value.substring(0, 100);
-            singleCharCount.textContent = `100 / 100`;
-            alert(t('alert_length_limit'));
+            singleText.value = singleText.value.substring(0, 500);
+            singleCharCount.textContent = `500 / 500`;
+            alert(t('alert_length_limit_500'));
         } else {
             singleCharCount.style.color = 'var(--text-secondary)';
         }
@@ -373,12 +431,63 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    function getSingleTextContent() {
+        if (currentSingleType === 'text') {
+            const val = singleText.value.trim();
+            if (!val) {
+                alert(t('alert_content_empty'));
+                return null;
+            }
+            return val;
+        } else if (currentSingleType === 'wifi') {
+            const ssid = document.getElementById('wifi-ssid').value.trim();
+            const password = document.getElementById('wifi-password').value.trim();
+            const security = document.getElementById('wifi-security').value;
+            const hidden = document.getElementById('wifi-hidden').checked;
+            
+            if (!ssid) {
+                alert(t('alert_wifi_ssid_empty'));
+                return null;
+            }
+            
+            const escapeWifi = (val) => {
+                if (!val) return '';
+                return val.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/:/g, '\\:').replace(/,/g, '\\,');
+            };
+            
+            return `WIFI:S:${escapeWifi(ssid)};T:${security};P:${escapeWifi(password)};H:${hidden ? 'true' : ''};;`;
+        } else if (currentSingleType === 'vcard') {
+            const fn = document.getElementById('vcard-fn').value.trim();
+            const org = document.getElementById('vcard-org').value.trim();
+            const title = document.getElementById('vcard-title').value.trim();
+            const tel = document.getElementById('vcard-tel').value.trim();
+            const email = document.getElementById('vcard-email').value.trim();
+            const url = document.getElementById('vcard-url').value.trim();
+            
+            if (!fn) {
+                alert(t('alert_vcard_name_empty'));
+                return null;
+            }
+            
+            let vcard = 'BEGIN:VCARD\nVERSION:3.0\n';
+            vcard += `FN:${fn}\nN:;${fn};;;\n`;
+            if (org) vcard += `ORG:${org}\n`;
+            if (title) vcard += `TITLE:${title}\n`;
+            if (tel) vcard += `TEL;TYPE=CELL:${tel}\n`;
+            if (email) vcard += `EMAIL;TYPE=PREF,INTERNET:${email}\n`;
+            if (url) vcard += `URL:${url}\n`;
+            vcard += 'END:VCARD';
+            return vcard;
+        }
+        return null;
+    }
+
     // Generate Button Click
     generateBtn.addEventListener('click', async () => {
         if (currentMode === 'single') {
-            const text = singleText.value.trim();
-            if (!text) return alert(t('alert_content_empty'));
-            if (text.length > 100) return alert(t('alert_length_limit'));
+            const text = getSingleTextContent();
+            if (text === null) return;
+            if (text.length > 500) return alert(t('alert_length_limit_500'));
             await generateSingle(text);
         } else {
             const text = batchText.value;
@@ -506,7 +615,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Download Single
+    // Download Single (PNG)
     downloadBtn.addEventListener('click', () => {
         if (!lastGeneratedBlob) return;
         const objectURL = URL.createObjectURL(lastGeneratedBlob);
@@ -517,6 +626,51 @@ document.addEventListener('DOMContentLoaded', () => {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(objectURL);
+    });
+
+    // Download Single (SVG)
+    downloadSvgBtn.addEventListener('click', async () => {
+        const text = getSingleTextContent();
+        if (text === null) return;
+        
+        const originalText = downloadSvgBtn.textContent;
+        downloadSvgBtn.disabled = true;
+        downloadSvgBtn.textContent = t('text_loading');
+
+        const formData = new FormData();
+        formData.append('text', text);
+        formData.append('size', sizeInput.value);
+        formData.append('colorDark', colorDark.value);
+        formData.append('colorLight', colorLight.value);
+        formData.append('format', 'svg');
+        if (logoInput.files[0]) {
+            formData.append('logo', logoInput.files[0]);
+        }
+
+        try {
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) throw new Error('Failed to generate SVG');
+
+            const blob = await response.blob();
+            const objectURL = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = objectURL;
+            a.download = 'qrcode.svg';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(objectURL);
+        } catch (error) {
+            console.error(error);
+            alert(t('alert_gen_error'));
+        } finally {
+            downloadSvgBtn.disabled = false;
+            downloadSvgBtn.textContent = originalText;
+        }
     });
 
     // Download Batch
